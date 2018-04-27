@@ -11,11 +11,11 @@ im_original = double(imread(sprintf('%scirc1.png', data_path)))/255;
 
 %% apply preprocessing
 disp('main: preprocessing')
-[im_binarized, im_edges] = preprocessing.preprocess(im_original);
+[im_binarized, im_thin, im_edges] = preprocessing.preprocess(im_original);
 
 %% retrieve EC components out of preprocessing results
 disp('main: component recognition')
-components = comp_recognition.get_components(im_binarized, im_edges);
+components = comp_recognition.get_components(im_binarized, im_thin, im_edges);
 
 %% assemble simulink-model out of components
 disp('main: model assembly')
