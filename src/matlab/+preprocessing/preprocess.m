@@ -12,4 +12,3 @@ im_rectified = preprocessing.rectify(im_original);
 %% prepare different versions of the image
 im_binarized = imbinarize(im_rectified, bin_threshold);
 im_edges = edge(im_rectified);
-imshow(im_edges)
