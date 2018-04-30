@@ -1,4 +1,4 @@
-% THIS IS THE MAIN SCRIPT, THE PROGRAM STARTS AND ENDS HERE:
+% THIS IS THE MAIN SCRIPT, THE PROGRAM STARTS AND ENDS HERE.
 
 %% set environment variables
 data_path = '../data/';
@@ -11,15 +11,15 @@ im_original = double(imread(sprintf('%scirc1.png', data_path)))/255;
 
 %% apply preprocessing
 disp('main: preprocessing')
-[im_binarized, im_thin, im_edges] = preprocessing.preprocess(im_original);
+[im_binarized, im_thin, im_edges] = preprocess(im_original);
 
 %% retrieve EC components out of preprocessing results
 disp('main: component recognition')
-components = comp_recognition.get_components(im_binarized, im_thin, im_edges);
+components = analyse_image(im_binarized, im_thin, im_edges);
 
 %% assemble simulink-model out of components
 disp('main: model assembly')
-ec_model = model_assembly.assemble(components);
+ec_model = generate_output(components);
 
 %% view and save model
 disp('main: view and save')
