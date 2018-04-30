@@ -24,16 +24,17 @@ circles = 0;
 %% TODO obj recog
 ec_sources = comp_recognition.retrieve_sources(lines, corners, circles);
 ec_resistors = comp_recognition.retrieve_resistors(lines, corners, circles)
-ec_capacitors = comp_recognition.retrieve_capacitors(lines, corners, circles);
 ec_inductors = comp_recognition.retrieve_inductors(lines, corners, circles);
+ec_capacitors = comp_recognition.retrieve_capacitors(lines, corners, circles);
+ec_connections = comp_recognition.retrieve_connections(lines, corners, circles);
 
-%% arrange components structure
+%% fill the 'components' data structure
 
 
 %% analyse corresponding text
 components = comp_recognition.analyse_text(im_edges, components);
 
-%% show stuff (for debugging)
+%% [for debugging] show stuff
 
 figure, imshow(im_thin), hold on
 plot(corners.selectStrongest(200));
