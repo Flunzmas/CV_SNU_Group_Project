@@ -10,6 +10,9 @@ hpeak_areasize = 0.020;
 hline_max_gap = 5;
 hline_min_length = 10;
 angle_tol = 3;
+cor_min_quality = 0.1;
+cor_filter_size = 3;
+cir_sensitivity = 0.90;
 
 %% retrieve lines
 [hough_h, theta, rho] = hough(im_thin, 'RhoResolution', hough_rho_resolution);
@@ -22,11 +25,20 @@ hough_l = houghlines(im_thin, theta, rho, hough_p, 'FillGap', hline_max_gap, ...
 [lines axis_lines skewed_lines] = im_analysis.check_line_angle(hough_l, angle_tol);
 
 %% retrieve corners
-corners = detectHarrisFeatures(im_binarized, 'MinQuality', 0.1);
+corners = detectHarrisFeatures(im_thin, 'MinQuality', cor_min_quality, ...
+                                             'FilterSize', cor_filter_size);
 
 %% retrieve circles
-% TODO retrieve circles
-circles = 0;
+circles = zeros(1, 3);
+for i = 6 : 10 : (min(size(im_thin)) / 4)
+    [centers, radii] = imfindcircles(im_thin, [i i+10], 'Sensitivity', cir_sensitivity);
+    if size(centers) > 0
+        circles = [circles; [centers radii]]; %#ok<AGROW>
+    end
+end
+if size(circles(:, 1)) > 0
+    circles = circles(2:end, :);
+end
 
 %% TODO obj recog
 ec_sources = im_analysis.detect_sources(lines, corners, circles);
@@ -45,8 +57,8 @@ components = im_analysis.detect_text(im_binarized, components);
 %% [for debugging] show stuff
 
 figure, imshow(im_thin), hold on
-% plot(corners.selectStrongest(200));
-% viscircles(circ_centers, circ_radii, 'EdgeColor','b');
+plot(corners);
+viscircles(circles(:, 1:2), circles(:, 3), 'EdgeColor','b');
 
 for N = 1 : length(axis_lines)
    plot([axis_lines(N, 3); axis_lines(N, 5)], ...
