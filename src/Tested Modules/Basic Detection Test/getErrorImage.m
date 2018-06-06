@@ -7,7 +7,7 @@ function i_err  = getErrorImage(i_tem, i_ref, stepsize)
 
 %TODO: is padding needed? --> assume template image is properly cropped!
 
-fprintf("\tStart getErrorImage\n");
+fprintf("   >Start\tgetErrorImage");
 
 %% Check inputs
     %Check for accidental RGB images
@@ -40,6 +40,7 @@ fprintf("\tStart getErrorImage\n");
 %% Generate error image
     i_error     = ones(rows_ref, cols_ref);     %Error image, initialize with max normalized error = 1
     
+    fprintf("\tprogress: %6.2f%s", 0, '%');
     %Loop through reference image
     for row = 1:stepsize:maxRow + 1
         for col = 1:stepsize:maxCol + 1
@@ -72,10 +73,13 @@ fprintf("\tStart getErrorImage\n");
                 imagesc(i_vis4);
             end
         end
-        progress    = floor(row/maxRow * 100);
-        if mod(progress, 10) == 0, fprintf("\t\tDetection in progress: %d \n", progress); end
+        progress    = row / maxRow * 100;
+        if mod(round(progress), 10) == 0
+            fprintf(repmat('\b', 1, 18));
+            fprintf("\tprogress: %6.2f%s", progress, '%'); 
+        end
     end
-
+    fprintf(repmat('\b', 1, 18));
     
 %% Visualization and return
     if 0
@@ -92,6 +96,6 @@ fprintf("\tStart getErrorImage\n");
     i_err = i_errorInv(floor(rows_tem / 2) + 1:rows_ref - floor(rows_tem / 2), ...
                        floor(cols_tem / 2) + 1:cols_ref - floor(cols_tem / 2));
 
-fprintf("\tEnd getErrorImage\n");
+fprintf("\t...Ended\n");
     
 return
