@@ -7,7 +7,7 @@ function i_err  = getErrorImage(i_tem, i_ref, stepsize)
 
 %TODO: is padding needed? --> assume template image is properly cropped!
 
-fprintf("\tStart basicMatching\n");
+fprintf("\tStart getErrorImage\n");
 
 %% Check inputs
     %Check for accidental RGB images
@@ -24,10 +24,12 @@ fprintf("\tStart basicMatching\n");
 %% Preperation
     
     [rows_tem, cols_tem]    = size(i_tem);    %Size of template = detection window
-    %Pad template if even numbered size
+    
+    %Pad template if even numbered size with 1 pixel
     if mod(rows_tem, 2) == 0,   i_tem = padarray(i_tem, [1 0], 'post'); end
     if mod(cols_tem, 2) == 0,   i_tem = padarray(i_tem, [0 1], 'post'); end
     [rows_tem, cols_tem]    = size(i_tem);    %Size of template = detection window
+    
     i_ref   = padarray(i_ref, [floor(rows_tem / 2), floor(cols_tem / 2)]);  %pad with zeros
     [rows_ref, cols_ref]    = size(i_ref);    %Size of reference image
     
@@ -69,13 +71,14 @@ fprintf("\tStart basicMatching\n");
 
                 imagesc(i_vis4);
             end
- 
         end
+        progress    = floor(row/maxRow * 100);
+        if mod(progress, 10) == 0, fprintf("\t\tDetection in progress: %d \n", progress); end
     end
 
     
 %% Visualization and return
-    if 0 
+    if 0
         f = figure;
         colormap('gray');
         i_compare   = imcomplement(imfuse(i_ref, i_errorInv, 'diff'));
@@ -87,8 +90,8 @@ fprintf("\tStart basicMatching\n");
     
     %Get error image in original (unpadded) i_ref size
     i_err = i_errorInv(floor(rows_tem / 2) + 1:rows_ref - floor(rows_tem / 2), ...
-                       floor(cols_tem / 2) + 1:rows_ref - floor(cols_tem / 2));
+                       floor(cols_tem / 2) + 1:cols_ref - floor(cols_tem / 2));
 
-fprintf("\tEnd basicMatching\n");
+fprintf("\tEnd getErrorImage\n");
     
 return
