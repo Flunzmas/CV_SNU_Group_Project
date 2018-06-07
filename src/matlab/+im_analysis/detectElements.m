@@ -139,9 +139,13 @@ fprintf(" >>>Start\tdetectElements\n");
     inter1       = rectint(elRects, elRects);   %Get intersection matrix
     for j = 1:size(inter1, 1)
         for k = j + 1:size(inter1, 2)
-            if inter1(j, k) ~= 0
-                fprintf("\t\tContested area between %d and %d\n", j, k);
-                if scores(j) <= scores(k)       %figure out which has a better (lower) score
+            if inter1(j, k) ~= 0                %Check for shared area
+                %Hack around gnd and res similarity. Give res priority
+                if      elList{j, 1} == "res" && elList{k, 1} == "gnd"
+                    keepVec(k) = 0;
+                elseif  elList{j, 1} == "gnd" && elList{k, 1} == "res"
+                    keepVec(j) = 0;
+                elseif  scores(j) <= scores(k)  %figure out which has a better (lower) score
                     keepVec(k) = 0;
                 else
                     keepVec(j) = 0;
