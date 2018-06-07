@@ -9,6 +9,7 @@ function [coords, i_max] = getMaxima(i_err)
 %collected.
 
 fprintf("   >Start\tgetMaxima");
+vis = 0;
 
 %% Binarize maxima
     %Binarize maxima
@@ -62,7 +63,7 @@ fprintf("   >Start\tgetMaxima");
     end
     
 %% Visualization
-if 0    %Compare error image and minima supressed image
+if vis    %Compare error image and minima supressed image
     f = figure;
     colormap('gray');
     subplot(1,3,1), imagesc(i_err),     title("Input - err Image");
@@ -71,7 +72,7 @@ if 0    %Compare error image and minima supressed image
     waitfor(f)    
 end
 
-if 0    %Compare minima supressed image and 
+if vis    %Compare minima supressed image and 
     f = figure;
     colormap('gray');
     subplot(1,2,1), imagesc(i_sup),     title("Minima supressed");

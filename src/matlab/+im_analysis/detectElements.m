@@ -8,6 +8,8 @@ function elementList = detectElements(i_testRGB, resSize)
 
 fprintf("\n-----------------------\n");
 fprintf(" >>>Start\tdetectElements\n");
+vis1 = 1;
+vis2 = 0;
 
 
 %% Parameters
@@ -37,12 +39,12 @@ fprintf(" >>>Start\tdetectElements\n");
     i_temp_dcv  = rgb2gray(im2double(imread('001-dcv.png')));
     
     %Integrate templates into struct (manually) and resize 
-    templ(1).name   = "cap";
-    templ(1).temp   = imresize(i_temp_cap, [resRows*1.0000 resCols*0.2928]);
+    templ(3).name   = "cap";
+    templ(3).temp   = imresize(i_temp_cap, [resRows*1.0000 resCols*0.2928]);
     templ(2).name   = "ind";
     templ(2).temp   = imresize(i_temp_ind, [resRows*0.8462 resCols*1.2431]);
-    templ(3).name   = "res";
-    templ(3).temp   = imresize(i_temp_res, [resRows*1.0000 resCols*1.0000]);
+    templ(1).name   = "res";
+    templ(1).temp   = imresize(i_temp_res, [resRows*1.0000 resCols*1.0000]);
     templ(4).name   = "dcv";
     templ(4).temp   = imresize(i_temp_dcv, [resRows*0.9011 resCols*1.3481]);
     templ(5).name   = "gnd";
@@ -93,7 +95,7 @@ fprintf(" >>>Start\tdetectElements\n");
             end
 
             %For Visualization (show found elements in current sweep)
-            if 0
+            if vis2
                 elemRects   = zeros(elFound, 4);
                 elemCenters = zeros(elFound, 3);
 
@@ -180,7 +182,7 @@ fprintf(" >>>Start\tdetectElements\n");
 
 %% Visualization
     % Show all potential elements
-    if 1
+    if vis1
         elemRects   = zeros(elCountPre, 4);
         elemMarks   = zeros(elCountPre, 2);
         elemTexts   = zeros(elCountPre, 2);
@@ -211,7 +213,7 @@ fprintf(" >>>Start\tdetectElements\n");
     end    
     
     % Show found elements
-    if 1
+    if vis1
         elemRects   = zeros(elCountPost, 4);
         elemMarks   = zeros(elCountPost, 2);
         elemTexts   = zeros(elCountPost, 2);

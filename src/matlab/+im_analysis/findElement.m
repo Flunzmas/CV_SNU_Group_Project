@@ -10,6 +10,7 @@ function [coords, t_param] = findElement(i_temp, i_test)
 %This function uses: ppDetection, getErrorImage, getMaxima
 
 fprintf("  >>Start\tfindElement\n");
+vis = 0;
 
 
 %% Parameters
@@ -58,7 +59,7 @@ fprintf("  >>Start\tfindElement\n");
     
     
 %% Visualization
-    if 0    %Compare input image, error image and max image
+    if vis    %Compare input image, error image and max image
         %close all
         f = figure;
         colormap('gray');
