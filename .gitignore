@@ -1,4 +1,3 @@
 src/results/*
 *.asv
 *.fig
-src/matlab/main.m
