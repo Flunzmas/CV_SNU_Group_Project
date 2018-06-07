@@ -17,7 +17,8 @@ p_correspondences = preprocessing.detect_paper(im_original);
 im_rectified = preprocessing.rectify(im_original, p_correspondences);
 
 %% prepare different versions of the image
-im_binarized = imbinarize(im_rectified, bin_threshold);
-im_half_thin = bwmorph(im_binarized, 'thicken'); % 'thicken' is actually thinning the lines - don't ask me why!
-im_thin      = ~bwmorph(im_half_thin, 'thicken'); % negating the image!
-im_edges     = edge(im_thin);
+<<<<<<< HEAD
+im_binarized = ~imbinarize(im_rectified, bin_threshold);
+im_half_thin = bwmorph(im_binarized, 'thin');
+im_thin = bwmorph(im_half_thin, 'thin');
+im_edges = edge(im_thin);

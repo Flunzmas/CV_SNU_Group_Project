@@ -9,21 +9,16 @@ hpeak_threshold = 0.02;
 hpeak_areasize = 0.020;
 hline_max_gap = 5;
 hline_min_length = 10;
-angle_tol = 3;
-pixel_tol = 3;
+angle_tol = 1.5;
+line_percentage_tol = 0.1;
+resistor_line_angle = 26.5;
 cor_min_quality = 0.1;
 cor_filter_size = 3;
 cir_sensitivity = 0.90;
 
 %% retrieve lines
-[hough_h, theta, rho] = hough(im_thin, 'RhoResolution', hough_rho_resolution);
-hough_p = houghpeaks(hough_h, 200, 'Threshold', ceil(hpeak_threshold*max(hough_h(:))), ...
-    'NHoodSize', 2 * floor(hpeak_areasize.*size(hough_h) / 2) + 1);
-hough_l = houghlines(im_thin, theta, rho, hough_p, 'FillGap', hline_max_gap, ...
-    'MinLength', hline_min_length);
-
-% analyse and sort the lines for further usage
-[lines, axis_lines, skewed_lines] = im_analysis.check_line_angle(hough_l, angle_tol);
+lines = im_analysis.retrieve_lines(im_thin, hough_rho_resolution, hpeak_threshold, ...
+    hpeak_areasize, hline_max_gap, hline_min_length);
 
 %% retrieve corners
 corners = detectHarrisFeatures(im_thin, 'MinQuality', cor_min_quality, ...
@@ -42,7 +37,27 @@ if size(circles(:, 1)) > 0
 end
 
 %% TODO obj recog
-[x_scale, y_scale] = im_analysis.retrieve_scale(skewed_lines, pixel_tol);
+
+% retrieve dimensions of a resistor in order to determine the scale of the
+% ec's elements.
+resistor_dim = im_analysis.retrieve_resistor_dim(lines, resistor_line_angle, angle_tol, line_percentage_tol)
+
+% use a sliding-window approach to detect all relevant elements.
+% TODO
+
+% After detection, erases the elements from the image so that only the
+% connections are left to deal with.
+element_list = 0;
+im_connections = im_analysis.erase_elements(im_thin, element_list);
+
+% Retrieve the endpoints of all connections (-> parallel to the axes)
+connection_lines = im_analysis.retrieve_lines(im_connections, ...
+    hough_rho_resolution, hpeak_threshold, ...
+    hpeak_areasize, hline_max_gap, hline_min_length);
+
+line_angles = connection_lines(:,2);
+connection_lines = connection_lines(min(mod(line_angles, 90), mod(-line_angles, 90)) < angle_tol, :);
+connection_endpoints = connection_lines(:, 3:6);
 
 %% fill the 'components' data structure
 components = 0;
@@ -56,13 +71,13 @@ figure, imshow(im_thin), hold on
 % plot(corners);
 % viscircles(circles(:, 1:2), circles(:, 3), 'EdgeColor','b');
 
-for N = 1 : length(axis_lines)
-   plot([axis_lines(N, 3); axis_lines(N, 5)], ...
-        [axis_lines(N, 4); axis_lines(N, 6)], ...
+for N = 1 : length(connection_lines)
+   plot([connection_lines(N, 3); connection_lines(N, 5)], ...
+        [connection_lines(N, 4); connection_lines(N, 6)], ...
         'LineWidth',2,'Color','r');
 end
-for N = 1 : length(skewed_lines)
-   plot([skewed_lines(N, 3); skewed_lines(N, 5)], ...
-        [skewed_lines(N, 4); skewed_lines(N, 6)], ...
-        'LineWidth',2,'Color','g');
-end
+% for N = 1 : length(skewed_lines)
+%    plot([skewed_lines(N, 3); skewed_lines(N, 5)], ...
+%         [skewed_lines(N, 4); skewed_lines(N, 6)], ...
+%         'LineWidth',2,'Color','g');
+% end
