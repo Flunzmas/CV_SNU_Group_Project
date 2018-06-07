@@ -5,17 +5,11 @@ data_path = '../data/';
 results_path = '../results/';
 result_name = 'ec_model';
 
-<<<<<<< HEAD
-%% read the image
-disp('main: loading image')
-im_original = double(imread(sprintf('%s001-notext.png', data_path)))/255;
-=======
 %% use a dialog to get the image
 answer = questdlg('What type of image are you supplying?', ...
 	'Image Type', ...
 	'Photo', 'Screenshot','Screenshot');
 im_original = selectImage();
->>>>>>> 6157006f0311a32a91af4cd69ec40b50690f053f
 
 %% apply preprocessing
 disp('main: preprocessing')
