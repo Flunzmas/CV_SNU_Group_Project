@@ -6,8 +6,20 @@ results_path = '../results/';
 result_name = 'ec_model';
 
 %% read the image
+
+%options
+fileExtensions = '*.png;*.jpg;*.jpeg';
+
 disp('main: loading image')
-im_original = double(imread(sprintf('%scirc1.png', data_path)))/255;
+
+%open file picker
+[file, path] = uigetfile(fileExtensions);
+
+%read image as double
+im_original = im2double(imread(strcat(path, file)));
+
+% disp('main: loading image')
+% im_original = double(imread(sprintf('%scirc1.png', data_path)))/255;
 
 %% apply preprocessing
 disp('main: preprocessing')
