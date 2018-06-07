@@ -123,19 +123,18 @@ fprintf(" >>>Start\tanalyseImage\n");
    
 
 %% Visualization
-    %For Visualization (show found elements)
-    if 0
+    % Show found elements
+    if 1
         elemRects   = zeros(elCountPost, 4);
-        elemCenters = zeros(elCountPost, 3);
+        elemCenters = zeros(elCountPost, 2);
 
-        for j = 1:elFound
-            elemRects(j, 1) = elCoords(j, 2) - HWC;
-            elemRects(j, 2) = elCoords(j, 1) - HWR;
-            elemRects(j, 3) = 2 * HWC;
-            elemRects(j, 4) = 2 * HWR;
+        for j = 1:elCountPost
+            elemRects(j, 1) = round(elementList{j, 3}(2));  %x-coord
+            elemRects(j, 2) = round(elementList{j, 3}(1));  %y-coord
+            elemRects(j, 3) = round(elementList{j, 4}(2) - elementList{j, 3}(2)); %width
+            elemRects(j, 4) = round(elementList{j, 4}(1) - elementList{j, 3}(1)); %height
             elemCenters(j, 1) = elCoords(j, 2);
             elemCenters(j, 2) = elCoords(j, 1);
-            elemCenters(j, 3) = (HWR + HWC) / 6;
         end
 
         i_testANA   = insertShape(i_testRGB, 'Rectangle', elemRects, 'Color', 'r', 'LineWidth', 3);
