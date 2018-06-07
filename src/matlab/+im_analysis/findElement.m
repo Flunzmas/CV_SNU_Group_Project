@@ -24,12 +24,12 @@ fprintf("  >>Start\tfindElement\n");
     while 1
         
         % Pre processing
-        i_testPP    = ppDetection(i_test, bw_thresh, t_param, sigma, scale);
-        i_tempPP    = ppDetection(i_temp, bw_thresh, t_param, sigma, scale);
+        i_testPP    = im_analysis.ppDetection(i_test, bw_thresh, t_param, sigma, scale);
+        i_tempPP    = im_analysis.ppDetection(i_temp, bw_thresh, t_param, sigma, scale);
 
         % Get error image and coordinates of element-maxima
-        i_error         = getErrorImage(i_tempPP, i_testPP, 1);
-        [coords, i_max] = getMaxima(i_error);
+        i_error         = im_analysis.getErrorImage(i_tempPP, i_testPP, 1);
+        [coords, i_max] = im_analysis.getMaxima(i_error);
         
         % Check for sucessfull maximas
         if ~isnan(coords)

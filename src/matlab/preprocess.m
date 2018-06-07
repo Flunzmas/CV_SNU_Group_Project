@@ -1,7 +1,7 @@
 % Entry function for the preprocessing. Takes a given image and
 % preprocesses it in order to facilitate the following component
 % retrieving step.
-function [im_binarized, im_thin, im_original] = preprocess(im_original)
+function [im_binarized, im_thin] = preprocess(im_original)
 
 %% preprocessing parameters
 bin_threshold = 150/255;

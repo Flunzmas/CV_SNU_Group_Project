@@ -43,7 +43,7 @@ end
 resistor_dim = im_analysis.retrieve_resistor_dim(lines, resistor_line_angle, angle_tol, line_percentage_tol);
 
 % use a sliding-window approach to detect all relevant elements.
-elem_list    = detectElements(im_original, resistor_dim);
+elem_list    = im_analysis.detectElements(im_original, resistor_dim);
 
 % After detection, erases the elements from the image so that only the
 % connections are left to deal with.

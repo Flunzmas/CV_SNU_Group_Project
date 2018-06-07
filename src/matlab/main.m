@@ -7,15 +7,15 @@ result_name = 'ec_model';
 
 %% read the image
 disp('main: loading image')
-im_original = double(imread(sprintf('%s001-notext.png', data_path)))/255;
+im_original = double(imread(sprintf('%s002-notext.png', data_path)))/255;
 
 %% apply preprocessing
 disp('main: preprocessing')
-[im_binarized, im_thin, im_edges] = preprocess(im_original);
+[im_binarized, im_thin] = preprocess(im_original);
 
 %% retrieve EC components out of preprocessing results
 disp('main: component recognition')
-components = analyse_image(im_binarized, im_thin, im_edges);
+components = analyse_image(im_binarized, im_thin, im_original);
 
 %% assemble simulink-model out of components
 disp('main: model assembly')

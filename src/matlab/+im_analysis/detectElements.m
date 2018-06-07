@@ -6,12 +6,12 @@ function elementList = detectElements(i_testRGB, resSize)
 %elementList returns a cell array of found elements:
 %See elementList is formatted according to "cellArrayExample.m"
 
-fprintf("\n\n-----------------------\n");
-fprintf(" >>>Start\tanalyseImage\n");
+fprintf("\n-----------------------\n");
+fprintf(" >>>Start\tdetectElements\n");
 
 
 %% Parameters
-    elemPad             = 1.2;  %Pads coordinates of found elements
+    elemPad             = 1.5;  %Pads coordinates of found elements
     doubtAndiFactor     = 1.5;  %Tolerance for scoring and filtering
     
 
@@ -65,7 +65,7 @@ fprintf(" >>>Start\tanalyseImage\n");
         end
                 
         %Find elements
-        [elCoords, score]   = findElement(i_temp, i_test);
+        [elCoords, score]   = im_analysis.findElement(i_temp, i_test);
         
         %Check if no elements have been found
         if isnan(elCoords)       
@@ -84,7 +84,7 @@ fprintf(" >>>Start\tanalyseImage\n");
             end
 
             %For Visualization (show found elements in current sweep)
-            if 0
+            if 1
                 elemRects   = zeros(elFound, 4);
                 elemCenters = zeros(elFound, 3);
 
@@ -126,7 +126,7 @@ fprintf(" >>>Start\tanalyseImage\n");
 
 %% Visualization
     % Show found elements
-    if 1
+    if 0
         elemRects   = zeros(elCountPost, 4);
         elemCenters = zeros(elCountPost, 2);
 
@@ -148,7 +148,7 @@ fprintf(" >>>Start\tanalyseImage\n");
     end    
     
     
-fprintf(" >>>End\tanalyseImage\n");
+fprintf(" >>>End\tdetectElements\n");
 fprintf("-----------------------\n\n");
 
 end
