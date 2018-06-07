@@ -7,7 +7,7 @@ function i_err  = getErrorImage(i_tem, i_ref, stepsize)
 
 %TODO: is padding needed? --> assume template image is properly cropped!
 
-fprintf("\tStart basicMatching\n");
+fprintf("   >Start\tgetErrorImage");
 
 %% Check inputs
     %Check for accidental RGB images
@@ -24,10 +24,12 @@ fprintf("\tStart basicMatching\n");
 %% Preperation
     
     [rows_tem, cols_tem]    = size(i_tem);    %Size of template = detection window
-    %Pad template if even numbered size
+    
+    %Pad template if even numbered size with 1 pixel
     if mod(rows_tem, 2) == 0,   i_tem = padarray(i_tem, [1 0], 'post'); end
     if mod(cols_tem, 2) == 0,   i_tem = padarray(i_tem, [0 1], 'post'); end
     [rows_tem, cols_tem]    = size(i_tem);    %Size of template = detection window
+    
     i_ref   = padarray(i_ref, [floor(rows_tem / 2), floor(cols_tem / 2)]);  %pad with zeros
     [rows_ref, cols_ref]    = size(i_ref);    %Size of reference image
     
@@ -38,6 +40,7 @@ fprintf("\tStart basicMatching\n");
 %% Generate error image
     i_error     = ones(rows_ref, cols_ref);     %Error image, initialize with max normalized error = 1
     
+    fprintf("\tprogress: %6.2f%s", 0, '%');
     %Loop through reference image
     for row = 1:stepsize:maxRow + 1
         for col = 1:stepsize:maxCol + 1
@@ -51,7 +54,7 @@ fprintf("\tStart basicMatching\n");
             %assign errNorm to THE CENTER of detection window
             i_error(row + floor(rows_tem / 2), col + floor(cols_tem / 2))   = errNorm;
             %invert error image, so that higher values correspond to better fit
-            i_errorInv = imcomplement(i_error);
+            %i_errorInv = imcomplement(i_error);
             
             if 0    %Visualization
                 i_vis1  = zeros(rows_ref, cols_ref);
@@ -69,13 +72,17 @@ fprintf("\tStart basicMatching\n");
 
                 imagesc(i_vis4);
             end
- 
+        end
+        progress    = row / maxRow * 100;
+        if mod(round(progress), 10) == 0
+            fprintf(repmat('\b', 1, 18));
+            fprintf("\tprogress: %6.2f%s", progress, '%'); 
         end
     end
-
+    fprintf(repmat('\b', 1, 18));
     
 %% Visualization and return
-    if 0 
+    if 0
         f = figure;
         colormap('gray');
         i_compare   = imcomplement(imfuse(i_ref, i_errorInv, 'diff'));
@@ -85,10 +92,12 @@ fprintf("\tStart basicMatching\n");
         waitfor(f)
     end
     
+    i_errorInv = imcomplement(i_error);
+
     %Get error image in original (unpadded) i_ref size
     i_err = i_errorInv(floor(rows_tem / 2) + 1:rows_ref - floor(rows_tem / 2), ...
-                       floor(cols_tem / 2) + 1:rows_ref - floor(cols_tem / 2));
+                       floor(cols_tem / 2) + 1:cols_ref - floor(cols_tem / 2));
 
-fprintf("\tEnd basicMatching\n");
+fprintf("\t...Ended\n");
     
 return

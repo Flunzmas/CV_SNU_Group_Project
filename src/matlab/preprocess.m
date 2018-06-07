@@ -17,6 +17,7 @@ p_correspondences = preprocessing.detect_paper(im_original);
 im_rectified = preprocessing.rectify(im_original, p_correspondences);
 
 %% prepare different versions of the image
+<<<<<<< HEAD
 im_binarized = ~imbinarize(im_rectified, bin_threshold);
 im_half_thin = bwmorph(im_binarized, 'thin');
 im_thin = bwmorph(im_half_thin, 'thin');
