@@ -54,7 +54,7 @@ fprintf("   >Start\tgetErrorImage");
             %assign errNorm to THE CENTER of detection window
             i_error(row + floor(rows_tem / 2), col + floor(cols_tem / 2))   = errNorm;
             %invert error image, so that higher values correspond to better fit
-            i_errorInv = imcomplement(i_error);
+            %i_errorInv = imcomplement(i_error);
             
             if 0    %Visualization
                 i_vis1  = zeros(rows_ref, cols_ref);
@@ -92,6 +92,8 @@ fprintf("   >Start\tgetErrorImage");
         waitfor(f)
     end
     
+    i_errorInv = imcomplement(i_error);
+
     %Get error image in original (unpadded) i_ref size
     i_err = i_errorInv(floor(rows_tem / 2) + 1:rows_ref - floor(rows_tem / 2), ...
                        floor(cols_tem / 2) + 1:cols_ref - floor(cols_tem / 2));
