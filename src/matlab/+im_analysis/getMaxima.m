@@ -22,6 +22,14 @@ fprintf("   >Start\tgetMaxima");
         coords  = NaN;
         i_max   = i_supBin;
         fprintf("\t\t...Ended - Type 1 failure\n");
+        if 0    %Compare error image and minima supressed image
+            f = figure;
+            colormap('gray');
+            subplot(1,3,1), imagesc(i_err),     title("Input - err Image");
+            subplot(1,3,2), imagesc(i_sup),     title("Minima supressed");
+            subplot(1,3,3), imagesc(i_supBin),  title("Binarized");
+            waitfor(f)    
+        end
         return
     end
     
@@ -31,6 +39,14 @@ fprintf("   >Start\tgetMaxima");
         coords  = NaN;
         i_max   = i_supBin;
         fprintf("\t\t...Ended - Type 2 failure\n");
+        if 0    %Compare error image and minima supressed image
+            f = figure;
+            colormap('gray');
+            subplot(1,3,1), imagesc(i_err),     title("Input - err Image");
+            subplot(1,3,2), imagesc(i_sup),     title("Minima supressed");
+            subplot(1,3,3), imagesc(i_supBin),  title("Binarized");
+            waitfor(f)    
+        end
         return
     end
     

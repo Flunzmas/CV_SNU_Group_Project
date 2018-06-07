@@ -36,16 +36,16 @@ fprintf(" >>>Start\tdetectElements\n");
     i_temp_dcv  = rgb2gray(im2double(imread('001-dcv.png')));
     
     %Integrate templates into struct (manually) and resize 
-    templ(1).name   = "cap";
-    templ(1).temp   = imresize(i_temp_cap, [resRows*1.0000 resCols*0.2928]);
+    templ(5).name   = "cap";
+    templ(5).temp   = imresize(i_temp_cap, [resRows*1.0000 resCols*0.2928]);
     templ(2).name   = "ind";
     templ(2).temp   = imresize(i_temp_ind, [resRows*0.8462 resCols*1.2431]);
     templ(3).name   = "res";
     templ(3).temp   = imresize(i_temp_res, [resRows*1.0000 resCols*1.0000]);
     templ(4).name   = "dcv";
     templ(4).temp   = imresize(i_temp_dcv, [resRows*1.9780 resCols*1.9780]);
-    templ(5).name   = "gnd";
-    templ(5).temp   = imresize(i_temp_gnd, [resRows*1.1319 resCols*0.6264]);
+    templ(1).name   = "gnd";
+    templ(1).temp   = imresize(i_temp_gnd, [resRows*1.1319 resCols*0.5691]);
     
     
 %% Find elements
