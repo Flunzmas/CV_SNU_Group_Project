@@ -9,9 +9,10 @@ hpeak_threshold = 0.02;
 hpeak_areasize = 0.020;
 hline_max_gap = 5;
 hline_min_length = 10;
-angle_tol = 1.5;
+min_angle_deviance = 20; % minimum deviance from axes, e.g. from 20° to 70° if tol = 20
+res_angle_tol = 2; % maximum variance of resistor line angles
+axis_angle_tol = 1; % maximum deviance from axis angles
 line_percentage_tol = 0.1;
-resistor_line_angle = 26.5;
 cor_min_quality = 0.1;
 cor_filter_size = 3;
 cir_sensitivity = 0.90;
@@ -40,7 +41,7 @@ end
 
 % retrieve dimensions of a resistor in order to determine the scale of the
 % ec's elements.
-resistor_dim = im_analysis.retrieve_resistor_dim(lines, resistor_line_angle, angle_tol, line_percentage_tol);
+resistor_dim = im_analysis.retrieve_resistor_dim(lines, min_angle_deviance, res_angle_tol, line_percentage_tol);
 
 % use a sliding-window approach to detect all relevant elements.
 elem_list    = im_analysis.detectElements(im_original, resistor_dim);
@@ -55,7 +56,7 @@ connection_lines = im_analysis.retrieve_lines(im_connections, ...
     hpeak_areasize, hline_max_gap, hline_min_length);
 
 line_angles = connection_lines(:,2);
-connection_lines = connection_lines(min(mod(line_angles, 90), mod(-line_angles, 90)) < angle_tol, :);
+connection_lines = connection_lines(min(mod(line_angles, 90), mod(-line_angles, 90)) < axis_angle_tol, :);
 connection_endpoints = connection_lines(:, 3:6);
 
 %% fill the 'components' data structure

@@ -6,7 +6,7 @@ function [imO, ocrResult] = ocrCircuit(imC, roi)
 minConf = 0.8;
 
 %location of trained ocr language
-lang = 'circLang\tessdata\circLang.traineddata';
+lang = '+preprocessing\circLang\tessdata\circLang.traineddata';
 
 %block layout for best results
 lay = 'Block';
