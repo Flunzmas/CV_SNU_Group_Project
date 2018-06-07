@@ -14,7 +14,7 @@ fprintf("  >>Start\tfindElement\n");
 
 %% Parameters
     bw_thresh   = 150/200;
-    t_param     = 3;        %start value
+    t_param     = 4;        %start value
     t_param_max = 20;
     sigma       = 1;
     scale       = 0.25;
@@ -41,6 +41,9 @@ fprintf("  >>Start\tfindElement\n");
         if t_param > t_param_max
             fprintf("\tgetMaxima failed with t_param = %d and terminates", t_param);
             coords = NaN;
+            %f = figure;
+            %imagesc(i_max);
+            %waitfor(f);
             return
         end
         
@@ -52,6 +55,7 @@ fprintf("  >>Start\tfindElement\n");
     % Re-scale
     coords  = round(coords / scale);
 
+    
     
 %% Visualization
     if 0    %Compare input image, error image and max image
