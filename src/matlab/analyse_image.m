@@ -41,7 +41,7 @@ end
 
 % retrieve dimensions of a resistor in order to determine the scale of the
 % ec's elements.
-resistor_dim = im_analysis.retrieve_resistor_dim(lines, min_angle_deviance, res_angle_tol, line_percentage_tol)
+resistor_dim = im_analysis.retrieve_resistor_dim(lines, min_angle_deviance, res_angle_tol, line_percentage_tol);
 
 % use a sliding-window approach to detect all relevant elements.
 elem_list    = im_analysis.detectElements(im_original, resistor_dim);

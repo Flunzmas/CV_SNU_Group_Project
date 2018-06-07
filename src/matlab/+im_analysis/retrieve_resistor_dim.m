@@ -5,7 +5,7 @@ function resistor_dim = retrieve_resistor_dim(lines, min_angle_deviance, res_ang
 % assumption: at least one resistor in the circuit.
 % retrieve longest line with sufficient angle, assumption: resistor line.
 line_angles = lines(:,2);
-res_line_cand = lines(min(mod(line_angles, 90), mod(-line_angles, 90)) > min_angle_deviance, :)
+res_line_cand = lines(min(mod(line_angles, 90), mod(-line_angles, 90)) > min_angle_deviance, :);
 
 % if no line found: abort
 if size(res_line_cand, 1) < 1
