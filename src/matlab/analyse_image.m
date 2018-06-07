@@ -1,7 +1,7 @@
 % Entry function for the EC component recognition. Takes a given
 % preprocessing result and creates a data structure with all relevant EC
 % components which should form part of the simulink model to be built.
-function components = analyse_image(im_binarized, im_thin, im_edges)
+function components = analyse_image(im_binarized, im_thin, im_original)
 
 %% object recognition parameters
 hough_rho_resolution = 0.5;
@@ -40,15 +40,14 @@ end
 
 % retrieve dimensions of a resistor in order to determine the scale of the
 % ec's elements.
-resistor_dim = im_analysis.retrieve_resistor_dim(lines, resistor_line_angle, angle_tol, line_percentage_tol)
+resistor_dim = im_analysis.retrieve_resistor_dim(lines, resistor_line_angle, angle_tol, line_percentage_tol);
 
 % use a sliding-window approach to detect all relevant elements.
-% TODO
+elem_list    = detectElements(im_original, resistor_dim);
 
 % After detection, erases the elements from the image so that only the
 % connections are left to deal with.
-element_list = 0;
-im_connections = im_analysis.erase_elements(im_thin, element_list);
+im_connections = im_analysis.erase_elements(im_thin, elem_list);
 
 % Retrieve the endpoints of all connections (-> parallel to the axes)
 connection_lines = im_analysis.retrieve_lines(im_connections, ...

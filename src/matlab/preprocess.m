@@ -1,7 +1,7 @@
 % Entry function for the preprocessing. Takes a given image and
 % preprocesses it in order to facilitate the following component
 % retrieving step.
-function [im_binarized, im_thin, im_edges] = preprocess(im_original)
+function [im_binarized, im_thin, im_original] = preprocess(im_original)
 
 %% preprocessing parameters
 bin_threshold = 150/255;
@@ -17,8 +17,6 @@ p_correspondences = preprocessing.detect_paper(im_original);
 im_rectified = preprocessing.rectify(im_original, p_correspondences);
 
 %% prepare different versions of the image
-<<<<<<< HEAD
 im_binarized = ~imbinarize(im_rectified, bin_threshold);
 im_half_thin = bwmorph(im_binarized, 'thin');
 im_thin = bwmorph(im_half_thin, 'thin');
-im_edges = edge(im_thin);
