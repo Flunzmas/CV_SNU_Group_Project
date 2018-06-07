@@ -45,7 +45,7 @@ fprintf(" >>>Start\tdetectElements\n");
     
     
 %% Find elements
-    for i = 1:0.5:size(templ, 2)        %Double the loops for vert/hori direction
+    for i = 1:0.5:size(templ, 2) + 0.5  %Double the loops for vert/hori direction
         
         %Load current template and name
         k           = floor(i);
@@ -84,7 +84,7 @@ fprintf(" >>>Start\tdetectElements\n");
             end
 
             %For Visualization (show found elements in current sweep)
-            if 1
+            if 0
                 elemRects   = zeros(elFound, 4);
                 elemCenters = zeros(elFound, 3);
 
@@ -126,22 +126,30 @@ fprintf(" >>>Start\tdetectElements\n");
 
 %% Visualization
     % Show found elements
-    if 0
+    if 1
         elemRects   = zeros(elCountPost, 4);
-        elemCenters = zeros(elCountPost, 2);
+        elemMarks   = zeros(elCountPost, 2);
+        elemTexts   = zeros(elCountPost, 2);
+        elemNames   = cell(elCountPost, 1);
 
         for j = 1:elCountPost
             elemRects(j, 1) = round(elementList{j, 3}(2));  %x-coord
             elemRects(j, 2) = round(elementList{j, 3}(1));  %y-coord
             elemRects(j, 3) = round(elementList{j, 4}(2) - elementList{j, 3}(2)); %width
             elemRects(j, 4) = round(elementList{j, 4}(1) - elementList{j, 3}(1)); %height
-            elemCenters(j, 1) = elCoords(j, 2);
-            elemCenters(j, 2) = elCoords(j, 1);
+            
+            elemMarks(j, 1) = elemRects(j, 1) + elemRects(j, 3) / 2;    %Center x-coord
+            elemMarks(j, 2) = elemRects(j, 2) + elemRects(j, 4) / 2;    %Center y-coord
+           
+            elemTexts(j, 1) = elemRects(j, 1);                          %x-coord
+            elemTexts(j, 2) = elemRects(j, 2) + elemRects(j, 4) + 5;    %botton y-coord
+            elemNames{j}    = char(elementList{j, 1});
         end
 
         i_testANA   = insertShape(i_testRGB, 'Rectangle', elemRects, 'Color', 'r', 'LineWidth', 3);
-        i_testANA   = insertShape(i_testANA, 'Circle', elemCenters, 'Color', 'r');
-
+        i_testANA   = insertMarker(i_testANA, elemMarks, 'Color', 'r', 'Size', 20);
+        i_testANA   = insertText(i_testANA, elemTexts, elemNames, 'TextColor', 'r', 'FontSize', 30, 'BoxOpacity' , 0);
+        
         f = figure;
         imagesc(i_testANA);
         waitfor(f)
