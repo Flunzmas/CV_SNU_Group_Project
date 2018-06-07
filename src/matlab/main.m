@@ -7,7 +7,7 @@ result_name = 'ec_model';
 
 %% read the image
 disp('main: loading image')
-im_original = double(imread(sprintf('%scirc1.png', data_path)))/255;
+im_original = double(imread(sprintf('%s002-notext.png', data_path)))/255;
 
 %% apply preprocessing
 disp('main: preprocessing')
