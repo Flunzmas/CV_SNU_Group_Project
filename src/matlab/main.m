@@ -6,28 +6,16 @@ results_path = '../results/';
 result_name = 'ec_model';
 
 %% read the image
-
-%options
-fileExtensions = '*.png;*.jpg;*.jpeg';
-
 disp('main: loading image')
-
-%open file picker
-[file, path] = uigetfile(fileExtensions);
-
-%read image as double
-im_original = im2double(imread(strcat(path, file)));
-
-% disp('main: loading image')
-% im_original = double(imread(sprintf('%scirc1.png', data_path)))/255;
+im_original = double(imread(sprintf('%s005-notext.png', data_path)))/255;
 
 %% apply preprocessing
 disp('main: preprocessing')
-[im_binarized, im_thin, im_edges] = preprocess(im_original);
+[im_binarized, im_thin] = preprocess(im_original);
 
 %% retrieve EC components out of preprocessing results
 disp('main: component recognition')
-components = analyse_image(im_binarized, im_thin, im_edges);
+components = analyse_image(im_binarized, im_thin, im_original);
 
 %% assemble simulink-model out of components
 disp('main: model assembly')
