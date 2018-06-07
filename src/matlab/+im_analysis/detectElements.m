@@ -42,6 +42,10 @@ fprintf(" >>>Start\tdetectElements\n");
     templ(2).temp   = imresize(i_temp_ind, [resRows*0.8462 resCols*1.2431]);
     templ(3).name   = "res";
     templ(3).temp   = imresize(i_temp_res, [resRows*1.0000 resCols*1.0000]);
+    templ(4).name   = "dcv";
+    templ(4).temp   = imresize(i_temp_dcv, [resRows*1.9780 resCols*1.9780]);
+    templ(5).name   = "gnd";
+    templ(5).temp   = imresize(i_temp_gnd, [resRows*1.1319 resCols*0.6264]);
     
     
 %% Find elements
@@ -52,6 +56,9 @@ fprintf(" >>>Start\tdetectElements\n");
         i_temp      = templ(k).temp;
         elType      = templ(k).name;
         
+        HWR_o       = round(elemPad * size(templ(k).temp, 1) / 2);
+        HWC_o       = round(elemPad * size(templ(k).temp, 2) / 2);
+
         %Set horizontal/vertical
         if mod(i, 1) == 0
             elDir   = "hori";   %default (horizontal) stored template
@@ -84,7 +91,7 @@ fprintf(" >>>Start\tdetectElements\n");
             end
 
             %For Visualization (show found elements in current sweep)
-            if 0
+            if 1
                 elemRects   = zeros(elFound, 4);
                 elemCenters = zeros(elFound, 3);
 
@@ -149,6 +156,35 @@ fprintf(" >>>Start\tdetectElements\n");
         i_testANA   = insertShape(i_testRGB, 'Rectangle', elemRects, 'Color', 'r', 'LineWidth', 3);
         i_testANA   = insertMarker(i_testANA, elemMarks, 'Color', 'r', 'Size', 20);
         i_testANA   = insertText(i_testANA, elemTexts, elemNames, 'TextColor', 'r', 'FontSize', 30, 'BoxOpacity' , 0);
+        
+        f = figure;
+        imagesc(i_testANA);
+        waitfor(f)
+    end
+    
+    if 1        %Show all potential
+        elemRects   = zeros(elCountPre, 4);
+        elemMarks   = zeros(elCountPre, 2);
+        elemTexts   = zeros(elCountPre, 2);
+        elemNames   = cell(elCountPre, 1);
+
+        for j = 1:elCountPre
+            elemRects(j, 1) = round(elList{j, 3}(2));  %x-coord
+            elemRects(j, 2) = round(elList{j, 3}(1));  %y-coord
+            elemRects(j, 3) = round(elList{j, 4}(2) - elList{j, 3}(2)); %width
+            elemRects(j, 4) = round(elList{j, 4}(1) - elList{j, 3}(1)); %height
+            
+            elemMarks(j, 1) = elemRects(j, 1) + elemRects(j, 3) / 2;    %Center x-coord
+            elemMarks(j, 2) = elemRects(j, 2) + elemRects(j, 4) / 2;    %Center y-coord
+           
+            elemTexts(j, 1) = elemRects(j, 1);                          %x-coord
+            elemTexts(j, 2) = elemRects(j, 2) + elemRects(j, 4) + 5;    %botton y-coord
+            elemNames{j}    = char(elList{j, 1} + " " + elList{j, 5});
+        end
+
+        i_testANA   = insertShape(i_testRGB, 'Rectangle', elemRects, 'Color', 'r', 'LineWidth', 2);
+        i_testANA   = insertMarker(i_testANA, elemMarks, 'Color', 'r', 'Size', 10);
+        i_testANA   = insertText(i_testANA, elemTexts, elemNames, 'TextColor', 'black', 'FontSize', 20, 'BoxOpacity' , 0);
         
         f = figure;
         imagesc(i_testANA);

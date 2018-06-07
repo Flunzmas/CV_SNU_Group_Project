@@ -74,7 +74,7 @@ fprintf("   >Start\tgetErrorImage");
             end
         end
         progress    = row / maxRow * 100;
-        if mod(round(progress), 10) == 0
+        if mod(round(progress), 10) == 3
             fprintf(repmat('\b', 1, 18));
             fprintf("\tprogress: %6.2f%s", progress, '%'); 
         end

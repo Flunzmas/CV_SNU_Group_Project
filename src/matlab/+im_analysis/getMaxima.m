@@ -46,7 +46,7 @@ fprintf("   >Start\tgetMaxima");
     end
     
 %% Visualization
-if 0    %Compare error image and minima supressed image
+if 1    %Compare error image and minima supressed image
     f = figure;
     colormap('gray');
     subplot(1,3,1), imagesc(i_err),     title("Input - err Image");
