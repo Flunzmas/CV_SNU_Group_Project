@@ -7,4 +7,4 @@ i_testRGB   = im2double(imread('001-notext.png'));
 resSize     = [91 181];
 
 %Call analyseImage function
-elemList    = analyseImage(i_testRGB, resSize);
+elemList    = detectElements(i_testRGB, resSize);
