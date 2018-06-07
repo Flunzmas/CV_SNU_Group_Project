@@ -32,6 +32,8 @@ fprintf(" >>>Start\tanalyseImage\n");
     i_temp_cap  = rgb2gray(im2double(imread('001-cap.png')));
     i_temp_ind  = rgb2gray(im2double(imread('001-ind.png')));
     i_temp_res  = rgb2gray(im2double(imread('001-res.png')));
+    i_temp_gnd  = rgb2gray(im2double(imread('001-gnd.png')));
+    i_temp_dcv  = rgb2gray(im2double(imread('001-dcv.png')));
     
     %Integrate templates into struct (manually) and resize 
     templ(1).name   = "cap";

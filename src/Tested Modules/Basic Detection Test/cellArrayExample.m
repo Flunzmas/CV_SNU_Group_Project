@@ -1,7 +1,7 @@
 %Cell array returned from detection to output generation
 
 %Element information
-elemType    = "res";        %Element type: res, cap, ind, gnd, sdc, sac
+elemType    = "res";        %Element type: res, cap, ind, gnd, acc, acv, dcc, dcv
 elemDirect  = "vert";       %Element direction: vert, hori
 
 topLCoord   = [50, 39];     %Top left coordinate of element [row, col]
