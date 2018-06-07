@@ -36,16 +36,16 @@ fprintf(" >>>Start\tdetectElements\n");
     i_temp_dcv  = rgb2gray(im2double(imread('001-dcv.png')));
     
     %Integrate templates into struct (manually) and resize 
-    templ(5).name   = "cap";
-    templ(5).temp   = imresize(i_temp_cap, [resRows*1.0000 resCols*0.2928]);
+    templ(1).name   = "cap";
+    templ(1).temp   = imresize(i_temp_cap, [resRows*1.0000 resCols*0.2928]);
     templ(2).name   = "ind";
     templ(2).temp   = imresize(i_temp_ind, [resRows*0.8462 resCols*1.2431]);
     templ(3).name   = "res";
     templ(3).temp   = imresize(i_temp_res, [resRows*1.0000 resCols*1.0000]);
     templ(4).name   = "dcv";
     templ(4).temp   = imresize(i_temp_dcv, [resRows*0.9011 resCols*1.3481]);
-    templ(1).name   = "gnd";
-    templ(1).temp   = imresize(i_temp_gnd, [resRows*1.1319 resCols*0.5691]);
+    templ(5).name   = "gnd";
+    templ(5).temp   = imresize(i_temp_gnd, [resRows*1.1319 resCols*0.5691]);
     
     
 %% Find elements
@@ -118,11 +118,14 @@ fprintf(" >>>Start\tdetectElements\n");
     end
         
     
-%% Filter uncertain elements
+%% Filter elements
     elCountPre  = size(elList, 1);              %element count before filtering
     elCountPost = 0;                            %element count after filtering
     scores      = cell2mat(elList(:, 5));       %score values of found elements
     minScore    = floor(min(scores * doubtAndiFactor));     %minimal score (the smaller, the better)
+    
+    % Build position vector for element area
+    
     
     % Filter for proper elements and assign to output elementList
     for i = 1:elCountPre
@@ -151,7 +154,7 @@ fprintf(" >>>Start\tdetectElements\n");
             elemMarks(j, 2) = elemRects(j, 2) + elemRects(j, 4) / 2;    %Center y-coord
            
             elemTexts(j, 1) = elemRects(j, 1);                          %x-coord
-            elemTexts(j, 2) = elemRects(j, 2) + elemRects(j, 4) + 5;    %botton y-coord
+            elemTexts(j, 2) = elemRects(j, 2) + elemRects(j, 4) - 10;   %botton y-coord
             elemNames{j}    = char(elList{j, 1} + " " + elList{j, 5});
         end
 
@@ -182,13 +185,14 @@ fprintf(" >>>Start\tdetectElements\n");
             elemMarks(j, 2) = elemRects(j, 2) + elemRects(j, 4) / 2;    %Center y-coord
            
             elemTexts(j, 1) = elemRects(j, 1);                          %x-coord
-            elemTexts(j, 2) = elemRects(j, 2) + elemRects(j, 4) + 5;    %botton y-coord
+            elemTexts(j, 2) = elemRects(j, 2) + elemRects(j, 4) - 10;   %botton y-coord
             elemNames{j}    = char(elementList{j, 1});
         end
 
-        i_testANA   = insertShape(i_testRGB, 'Rectangle', elemRects, 'Color', 'r', 'LineWidth', 3);
+        i_testANA   = padarray    (i_testRGB, [60 60], 'replicate', 'post');
+        i_testANA   = insertShape (i_testANA, 'Rectangle', elemRects, 'Color', 'r', 'LineWidth', 3);
         i_testANA   = insertMarker(i_testANA, elemMarks, 'Color', 'r', 'Size', 20);
-        i_testANA   = insertText(i_testANA, elemTexts, elemNames, 'TextColor', 'r', 'FontSize', 30, 'BoxOpacity' , 0);
+        i_testANA   = insertText  (i_testANA, elemTexts, elemNames, 'TextColor', 'r', 'FontSize', 30, 'BoxOpacity' , 0);
         
         f = figure;
         imagesc(i_testANA);
