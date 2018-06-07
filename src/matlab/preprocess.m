@@ -54,11 +54,12 @@ imshow(im_mute)
 
 %% convert to grayscale if colored
 [~, ~, colors] = size(im_mute);
+im_colorless = im_mute;
 if colors > 1
-    im_mute = rgb2gray(im_mute);
+    im_colorless = rgb2gray(im_mute);
 end
 
 %% generate binarized and thinned image
-im_binarized = ~imbinarize(im_mute, bin_threshold);
+im_binarized = ~imbinarize(im_colorless, bin_threshold);
 im_half_thin = bwmorph(im_binarized, 'thin');
 im_thin = bwmorph(im_half_thin, 'thin');
