@@ -37,14 +37,14 @@ if size(circles(:, 1)) > 0
     circles = circles(2:end, :);
 end
 
-%% TODO obj recog
+%% element and connection detection
 
 % retrieve dimensions of a resistor in order to determine the scale of the
 % ec's elements.
 resistor_dim = im_analysis.retrieve_resistor_dim(lines, min_angle_deviance, res_angle_tol, line_percentage_tol);
 
 % use a sliding-window approach to detect all relevant elements.
-elem_list    = im_analysis.detectElements(im_mute, resistor_dim);
+elem_list = im_analysis.detectElements(im_mute, resistor_dim);
 
 % After detection, erases the elements from the image so that only the
 % connections are left to deal with.
