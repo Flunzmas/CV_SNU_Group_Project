@@ -8,13 +8,13 @@ classdef Inductor < output_generation.Element
     
     methods
         function obj = Inductor(name, x, y, orientation, henry)
-            obj = obj@Element(name, x, y, orientation);
+            obj = obj@output_generation.Element(name, x, y, orientation);
             obj.henry = henry;
             obj.simscapeObjName = 'Inductor';
         end
         
         function block = addToSystem(obj, system)
-            block = obj.addToSystem@Element(system);
+            block = obj.addToSystem@output_generation.Element(system);
             set_param(block,'l',num2str(obj.getHenry()));
         end
         

@@ -14,7 +14,7 @@ classdef DCVoltage < output_generation.Source
         end
         
         function block = addToSystem(obj, system)
-            block = obj.addToSystem@Source(system);
+            block = obj.addToSystem@output_generation.Source(system);
             set_param(block,'v0',num2str(obj.getVolt()));
         end
         

@@ -8,7 +8,7 @@ classdef Capacitor < output_generation.Element
     
     methods
         function obj = Capacitor(name, x, y, orientation, farad)
-            obj = obj@Element(name, x, y, orientation);
+            obj = obj@output_generation.Element(name, x, y, orientation);
             obj.farad = farad;
             obj.simscapeObjName = 'Capacitor';
             obj.width = 60;
@@ -16,7 +16,7 @@ classdef Capacitor < output_generation.Element
         end
         
         function block = addToSystem(obj, system)
-            block = obj.addToSystem@Element(system);
+            block = obj.addToSystem@output_generation.Element(system);
             set_param(block,'C',num2str(obj.getFarad()));
         end
         
