@@ -60,10 +60,7 @@ connection_lines = connection_lines(min(mod(line_angles, 90), mod(-line_angles, 
 connection_endpoints = connection_lines(:, 3:6);
 
 %% fill the 'components' data structure
-components = 0;
-
-%% analyse corresponding text
-components = im_analysis.detect_text(im_binarized, components);
+components = 0; % TODO
 
 %% [for debugging] show stuff
 
