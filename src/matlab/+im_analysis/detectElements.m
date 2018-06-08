@@ -14,7 +14,7 @@ vis2 = 0;
 
 %% Parameters
     elemPad         = 1.5;  %Pads coordinates of found elements
-    doubtAndiFactor = 1.5;  %Tolerance for scoring and filtering
+    doubtAndiFactor = 2.0;  %Tolerance for scoring and filtering
     bndExt          = 60;   %To filter out rogue elements (at bounds of image)
     
 
@@ -137,47 +137,47 @@ vis2 = 0;
         elRects(j, 4) = round(elList{j, 4}(1) - elList{j, 3}(1)); %height
     end
     
-    % Search for contested areas
-    inter1       = rectint(elRects, elRects);   %Get intersection matrix
-    for j = 1:size(inter1, 1)
-        for k = j + 1:size(inter1, 2)
-            if inter1(j, k) ~= 0                %Check for shared area
-                %Hack around gnd and res similarity. Give res priority
-                if      elList{j, 1} == "res" && elList{k, 1} == "gnd"
-                    keepVec(k) = 0;
-                elseif  elList{j, 1} == "gnd" && elList{k, 1} == "res"
-                    keepVec(j) = 0;
-                elseif  scores(j) <= scores(k)  %figure out which has a better (lower) score
-                    keepVec(k) = 0;
-                else
-                    keepVec(j) = 0;
-                end
-            end
-        end
-    end
-    
-    % Search for rogue elements (well beyond image bounds)
-    inter2  = rectint(elRects, [-bndExt, -bndExt, size(i_testRGB, 2) + 2*bndExt, size(i_testRGB, 1) + 2*bndExt]);
-    areas   = elRects(:,3) .* elRects(:,4); %Gets ares of all rectangles
-    isInImg = (inter2 == areas);            %Checks if element is fully contained in (padded) image
-    keepVec = keepVec .* isInImg;           %Performs and operation
-    
-    % Assign valid elements to output
-    for j = 1:elCountPre
-        if keepVec(j) == 1
-            elCountPost = elCountPost + 1;
-            elementList(elCountPost, :) = elList(j, 1:4);
-        end
-    end
-    
-    %older, more primitive filtering method
-%     % Filter for proper elements and assign to output elementList
-%     for i = 1:elCountPre
-%         if elList{i, 5} <= minScore
-%             elCountPost     = elCountPost + 1;
-%             elementList(elCountPost, :) = elList(i, 1:4);
+%     % Search for contested areas
+%     inter1       = rectint(elRects, elRects);   %Get intersection matrix
+%     for j = 1:size(inter1, 1)
+%         for k = j + 1:size(inter1, 2)
+%             if inter1(j, k) ~= 0                %Check for shared area
+%                 %Hack around gnd and res similarity. Give res priority
+%                 if      elList{j, 1} == "res" && elList{k, 1} == "gnd"
+%                     keepVec(k) = 0;
+%                 elseif  elList{j, 1} == "gnd" && elList{k, 1} == "res"
+%                     keepVec(j) = 0;
+%                 elseif  scores(j) <= scores(k)  %figure out which has a better (lower) score
+%                     keepVec(k) = 0;
+%                 else
+%                     keepVec(j) = 0;
+%                 end
+%             end
 %         end
 %     end
+%     
+%     % Search for rogue elements (well beyond image bounds)
+%     inter2  = rectint(elRects, [-bndExt, -bndExt, size(i_testRGB, 2) + 2*bndExt, size(i_testRGB, 1) + 2*bndExt]);
+%     areas   = elRects(:,3) .* elRects(:,4); %Gets ares of all rectangles
+%     isInImg = (inter2 == areas);            %Checks if element is fully contained in (padded) image
+%     keepVec = keepVec .* isInImg;           %Performs and operation
+%     
+%     % Assign valid elements to output
+%     for j = 1:elCountPre
+%         if keepVec(j) == 1
+%             elCountPost = elCountPost + 1;
+%             elementList(elCountPost, :) = elList(j, 1:4);
+%         end
+%     end
+    
+    %older, more primitive filtering method
+    % Filter for proper elements and assign to output elementList
+    for i = 1:elCountPre
+        if elList{i, 5} <= minScore
+            elCountPost     = elCountPost + 1;
+            elementList(elCountPost, :) = elList(i, 1:4);
+        end
+    end
    
 
 %% Visualization
