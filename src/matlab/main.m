@@ -21,7 +21,8 @@ components = analyse_image(im_binarized, im_thin, im_mute);
 
 %% assemble simulink-model out of components
 disp('main: model assembly')
-ec_model = generate_output(components);
+output_generation.run();
+%ec_model = generate_output(components);
 
 %% view and save model
 disp('main: view and save')

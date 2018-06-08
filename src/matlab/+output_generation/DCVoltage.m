@@ -1,4 +1,4 @@
-classdef DCVoltage < Source
+classdef DCVoltage < output_generation.Source
     %DCVOLTAGE Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -8,7 +8,7 @@ classdef DCVoltage < Source
     
     methods
         function obj = DCVoltage(name, x, y, orientation, volt)
-            obj = obj@Source(name, x, y, orientation);
+            obj = obj@output_generation.Source(name, x, y, orientation);
             obj.volt = volt;
             obj.simscapeObjName = 'DC Voltage Source';
         end

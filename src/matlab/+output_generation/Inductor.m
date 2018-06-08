@@ -1,4 +1,4 @@
-classdef Inductor < Element
+classdef Inductor < output_generation.Element
     %Inductor Summary of this class goes here
     %   Detailed explanation goes here
     

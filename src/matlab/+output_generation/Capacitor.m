@@ -1,4 +1,4 @@
-classdef Capacitor < Element
+classdef Capacitor < output_generation.Element
     %Capacitor Summary of this class goes here
     %   Detailed explanation goes here
     

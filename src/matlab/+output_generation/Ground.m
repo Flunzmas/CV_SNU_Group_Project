@@ -1,4 +1,4 @@
-classdef Ground < Element
+classdef Ground < output_generation.Element
     %ElectricalReference Summary of this class goes here
     %   Detailed explanation goes here
     
