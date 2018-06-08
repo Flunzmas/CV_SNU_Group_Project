@@ -7,6 +7,7 @@ classdef Connection
         tail
         hPort
         tPort
+        lines
     end
     
     methods
@@ -30,6 +31,10 @@ classdef Connection
         
         function tail = getTail(obj)
             tail = obj.tail;
+        end
+        
+        function obj = setLines(obj, lines)
+            obj.lines = lines;
         end
     end
 end

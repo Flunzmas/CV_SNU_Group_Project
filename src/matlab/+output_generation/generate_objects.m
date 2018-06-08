@@ -16,7 +16,7 @@ function objects = generate_objects(elementList, textList)
         for j=1:1:size(textList,1)
             t = textList(j,:);
             loc = t{2};
-            distance = sqrt(((loc(1)+loc(3)/2)-x)^2+((loc(2)+loc(4)/2)-y)^2);
+            distance = calc_distance([(loc(1)+loc(3)/2) (loc(2)+loc(4)/2)], [x y]);
             textList{j,3} = loc(2);
             textList{j,4} = distance;
         end
