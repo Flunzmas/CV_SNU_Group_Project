@@ -1,4 +1,4 @@
-classdef Resistor < Element
+classdef Resistor < output_generation.Element
     %RESISTOR Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -8,13 +8,13 @@ classdef Resistor < Element
     
     methods
         function obj = Resistor(name, x, y, orientation, ohm)
-            obj = obj@Element(name, x, y, orientation);
+            obj = obj@output_generation.Element(name, x, y, orientation);
             obj.ohm = ohm;
             obj.simscapeObjName = 'Resistor';
         end
         
         function block = addToSystem(obj, system)
-            block = obj.addToSystem@Element(system);
+            block = obj.addToSystem@output_generation.Element(system);
             set_param(block,'R',num2str(obj.getOhm()));
         end
         
