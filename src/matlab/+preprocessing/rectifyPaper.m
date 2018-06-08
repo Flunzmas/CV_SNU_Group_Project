@@ -1,10 +1,10 @@
 function imOut = rectifyPaper(imIn)
 
 %get corner points
-pointsCn = preprocessing.getCornerPoints(imIn);
+pointsCn = getCornerPoints(imIn);
 
 %generate correspondence points
-pointsCd = preprocessing.generateCorrespondencePoints(pointsCn);
+pointsCd = generateCorrespondencePoints(pointsCn);
 
 %calculate transformaiton matrix
 T = fitgeotrans(pointsCn,pointsCd,'projective');
@@ -13,7 +13,7 @@ T = fitgeotrans(pointsCn,pointsCd,'projective');
 imW = (imwarp(imIn, T));
 
 %recalculate corner points from warped image
-pointsW = preprocessing.getCornerPoints(imW);
+pointsW = getCornerPoints(imW);
 
 %cut out paper area
 imOut = imW(min(pointsW(:,2)):max(pointsW(:,2)),min(pointsW(:,1)):max(pointsW(:,1)));

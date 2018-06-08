@@ -8,6 +8,7 @@ function i_err  = getErrorImage(i_tem, i_ref, stepsize)
 %TODO: is padding needed? --> assume template image is properly cropped!
 
 fprintf("   >Start\tgetErrorImage");
+vis = 0;
 
 %% Check inputs
     %Check for accidental RGB images
@@ -74,7 +75,7 @@ fprintf("   >Start\tgetErrorImage");
             end
         end
         progress    = row / maxRow * 100;
-        if mod(round(progress), 10) == 0
+        if mod(round(progress), 10) == 3
             fprintf(repmat('\b', 1, 18));
             fprintf("\tprogress: %6.2f%s", progress, '%'); 
         end
@@ -82,7 +83,9 @@ fprintf("   >Start\tgetErrorImage");
     fprintf(repmat('\b', 1, 18));
     
 %% Visualization and return
-    if 0
+    i_errorInv = imcomplement(i_error);
+
+    if vis
         f = figure;
         colormap('gray');
         i_compare   = imcomplement(imfuse(i_ref, i_errorInv, 'diff'));
@@ -91,8 +94,6 @@ fprintf("   >Start\tgetErrorImage");
         subplot(1,3,3), imagesc(i_compare),     title("Comparison");
         waitfor(f)
     end
-    
-    i_errorInv = imcomplement(i_error);
 
     %Get error image in original (unpadded) i_ref size
     i_err = i_errorInv(floor(rows_tem / 2) + 1:rows_ref - floor(rows_tem / 2), ...

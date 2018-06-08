@@ -1,6 +1,7 @@
 function prepImage = ppDetection(i_input, bw_thresh, r_thicken, sigma, scale)
     
 fprintf("   >Start\tppDetection");
+vis = 0;
 
     %i_blurr     = imgaussfilt(i_input, sigma);
     i_binar     = ~imbinarize(i_input, bw_thresh);
@@ -9,7 +10,7 @@ fprintf("   >Start\tppDetection");
     
     
 %% Visualization and return
-if 0
+if vis
     f = figure;
     colormap('gray');
     subplot(1,2,1), imagesc(i_input),    title("original");

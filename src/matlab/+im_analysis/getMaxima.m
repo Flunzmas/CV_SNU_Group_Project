@@ -9,6 +9,7 @@ function [coords, i_max] = getMaxima(i_err)
 %collected.
 
 fprintf("   >Start\tgetMaxima");
+vis = 0;
 
 %% Binarize maxima
     %Binarize maxima
@@ -22,6 +23,14 @@ fprintf("   >Start\tgetMaxima");
         coords  = NaN;
         i_max   = i_supBin;
         fprintf("\t\t...Ended - Type 1 failure\n");
+        if 0    %Compare error image and minima supressed image
+            f = figure;
+            colormap('gray');
+            subplot(1,3,1), imagesc(i_err),     title("Input - err Image");
+            subplot(1,3,2), imagesc(i_sup),     title("Minima supressed");
+            subplot(1,3,3), imagesc(i_supBin),  title("Binarized");
+            waitfor(f)    
+        end
         return
     end
     
@@ -31,6 +40,14 @@ fprintf("   >Start\tgetMaxima");
         coords  = NaN;
         i_max   = i_supBin;
         fprintf("\t\t...Ended - Type 2 failure\n");
+        if 0    %Compare error image and minima supressed image
+            f = figure;
+            colormap('gray');
+            subplot(1,3,1), imagesc(i_err),     title("Input - err Image");
+            subplot(1,3,2), imagesc(i_sup),     title("Minima supressed");
+            subplot(1,3,3), imagesc(i_supBin),  title("Binarized");
+            waitfor(f)    
+        end
         return
     end
     
@@ -46,7 +63,7 @@ fprintf("   >Start\tgetMaxima");
     end
     
 %% Visualization
-if 0    %Compare error image and minima supressed image
+if vis    %Compare error image and minima supressed image
     f = figure;
     colormap('gray');
     subplot(1,3,1), imagesc(i_err),     title("Input - err Image");
@@ -55,7 +72,7 @@ if 0    %Compare error image and minima supressed image
     waitfor(f)    
 end
 
-if 0    %Compare minima supressed image and 
+if vis    %Compare minima supressed image and 
     f = figure;
     colormap('gray');
     subplot(1,2,1), imagesc(i_sup),     title("Minima supressed");

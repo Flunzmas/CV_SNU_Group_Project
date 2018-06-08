@@ -1,21 +1,23 @@
 % THIS IS THE MAIN SCRIPT, THE PROGRAM STARTS AND ENDS HERE.
 
-%% set environment variables
+%% environment variables
 data_path = '../data/';
 results_path = '../results/';
 result_name = 'ec_model';
 
-%% read the image
-disp('main: loading image')
-im_original = double(imread(sprintf('%s005-notext.png', data_path)))/255;
+%% use a dialog to get the image
+answer = questdlg('What type of image are you supplying?', ...
+	'Image Type', ...
+	'Photo', 'Screenshot','Screenshot');
+im_original = selectImage();
 
 %% apply preprocessing
 disp('main: preprocessing')
-[im_binarized, im_thin] = preprocess(im_original);
+[im_mute, im_binarized, im_thin, ocr_result] = preprocess(im_original, answer);
 
 %% retrieve EC components out of preprocessing results
 disp('main: component recognition')
-components = analyse_image(im_binarized, im_thin, im_original);
+components = analyse_image(im_binarized, im_thin, im_mute);
 
 %% assemble simulink-model out of components
 disp('main: model assembly')
