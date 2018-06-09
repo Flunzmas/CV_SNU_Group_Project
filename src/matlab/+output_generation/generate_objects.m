@@ -16,7 +16,7 @@ function objects = generate_objects(elementList, textList)
         for j=1:1:size(textList,1)
             t = textList(j,:);
             loc = t{2};
-            distance = calc_distance([(loc(1)+loc(3)/2) (loc(2)+loc(4)/2)], [x y]);
+            distance = output_generation.calc_distance([(loc(1)+loc(3)/2) (loc(2)+loc(4)/2)], [x y]);
             textList{j,3} = loc(2);
             textList{j,4} = distance;
         end
@@ -30,11 +30,12 @@ function objects = generate_objects(elementList, textList)
         
         % find value and 10^x of the object
         label = tL{1,1}{1};
-        valueLabel = tL{2,1}{1};
-        exp = "[A-Za-z]*";
+        valueLabel = regexprep(tL{2,1}{1}," ","\.");
+        exp = "[A-Za-z|(|)]*";
         value = str2double(regexprep(valueLabel,exp,""));
-        exp = "[1-9]*\.[1-9]*";
+        exp = "[1-9]*\.?[1-9]*";
         unit = regexprep(valueLabel,exp,"");
+        amp = 0; freq = 0;
         
         % multiply the value with the found 10^x
         switch unit
@@ -52,6 +53,11 @@ function objects = generate_objects(elementList, textList)
                 value = value*10^(6);
             case "G"
                 value = value*10^(9);
+            case "SINE()"
+                amp = floor(value);
+                freq = 10*rem(value,1);
+            case ""
+                value = value;
             otherwise
                 error("Invalid unit");
         end
@@ -59,21 +65,21 @@ function objects = generate_objects(elementList, textList)
         % create objects
         switch e{1}
             case "res"
-                objects(i) = Resistor(label,x,y,orientation,value);
+                objects(i) = output_generation.Resistor(label,x,y,orientation,value);
             case "ind"
-                objects(i) = Inductor(label,x,y,orientation,value);
+                objects(i) = output_generation.Inductor(label,x,y,orientation,value);
             case "cap"
-                objects(i) = Capacitor(label,x,y,orientation,value);
+                objects(i) = output_generation.Capacitor(label,x,y,orientation,value);
             case "gnd"
-                objects(i) = Ground(label,x,y,orientation,value);
+                objects(i) = output_generation.Ground(strcat("GND",int2str(i)),x,y,orientation);
             case "acc"
-                objects(i) = ACCurrent(label,x,y,orientation,value);
+                objects(i) = output_generation.ACCurrent(label,x,y,orientation,amp,freq);
             case "acv"
-                objects(i) = ACVoltage(label,x,y,orientation,value);
+                objects(i) = output_generation.ACVoltage(label,x,y,orientation,amp,freq);
             case "dcc"
-                objects(i) = DCCurrent(label,x,y,orientation,value);
+                objects(i) = output_generation.DCCurrent(label,x,y,orientation,value);
             case "dcv"
-                objects(i) = DCVoltage(label,x,y,orientation,value);
+                objects(i) = output_generation.DCVoltage(label,x,y,orientation,value);
             otherwise
                 error("Invalid element");
         end
