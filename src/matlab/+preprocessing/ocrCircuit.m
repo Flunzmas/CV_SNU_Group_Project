@@ -3,7 +3,7 @@ function [imO, ocrResult] = ocrCircuit(imC, roi)
 %% Init
 
 %minium confidence
-minConf = 0.8;
+minConf = 0.85;
 
 %location of trained ocr language
 lang = '+preprocessing\circLang\tessdata\circLang.traineddata';

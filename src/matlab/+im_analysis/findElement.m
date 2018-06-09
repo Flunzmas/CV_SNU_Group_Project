@@ -15,7 +15,7 @@ vis = 0;
 
 %% Parameters
     bw_thresh   = 150/200;
-    t_param     = 4;        %start value
+    t_param     = 6;        %start value
     t_param_max = 20;
     sigma       = 1;
     scale       = 0.25;
