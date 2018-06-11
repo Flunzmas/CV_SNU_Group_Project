@@ -1,17 +1,17 @@
-function model = create_system(name,elements,connections)
+function ec_system = create_system(name,elements,connections)
     if bdIsLoaded(name)
         bdclose(name);
     end
     
-    system = new_system(name);
+    ec_system = new_system(name);
     open_system(name);
     
     for i=1:1:size(elements)
-       elements(i).addToSystem(system);
+       elements(i).addToSystem(ec_system);
     end
     
     for i=1:1:size(connections)
-       connections(i).connect(system);
+       connections(i).connect(ec_system);
     end
     
 end

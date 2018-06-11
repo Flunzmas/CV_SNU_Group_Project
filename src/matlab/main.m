@@ -17,17 +17,15 @@ disp('main: preprocessing')
 
 %% retrieve EC components out of preprocessing results
 disp('main: component recognition')
-components = analyse_image(im_binarized, im_thin, im_mute);
+[elem_list, connection_endpoints] = analyse_image(im_binarized, im_thin, im_mute);
 
 %% assemble simulink-model out of components
 disp('main: model assembly')
-output_generation.run();
-%ec_model = generate_output(components);
+ec_system = generate_output(elem_list, connection_endpoints, ocr_result);
 
-%% view and save model
+%% save model
 disp('main: view and save')
-% open_system(ec_model);
-% save_system(ec_model, [results_path 'ec_model']);
+save_system(ec_model, [results_path 'ec_model']);
 %imwrite (im_thin, [results_path 'im_thin.png']); % temporarily here
 %imwrite (ec_model, [results_path result_name '.png']); % temporarily here
 
