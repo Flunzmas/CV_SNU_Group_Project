@@ -18,8 +18,8 @@ classdef ElectricalObject < matlab.mixin.Heterogeneous
         function obj = ElectricalObject(name, x, y, orientation)
             if nargin > 0
                 obj.name = name;
-                obj.x = round(x,-1);
-                obj.y = round(y,-1);
+                obj.x = x;
+                obj.y = y,-1;
                 obj.orientation = orientation;
             end
         end

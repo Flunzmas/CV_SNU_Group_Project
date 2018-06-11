@@ -4,7 +4,7 @@ function connections = process_wires(elementList, objects, wires)
 
     objCount = size(elementList,1);
     ports = zeros(objCount*2,4);
-    threshold = 5;
+    threshold = 10;
     connections = [];
     
     % find estimated location of ports

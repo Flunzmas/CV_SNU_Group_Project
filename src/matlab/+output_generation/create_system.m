@@ -11,6 +11,7 @@ function ec_system = create_system(name,elements,connections)
     end
     
     for i=1:1:size(connections)
+        i
        connections(i).connect(ec_system);
     end
     

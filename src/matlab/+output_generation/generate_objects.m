@@ -33,7 +33,7 @@ function objects = generate_objects(elementList, textList)
         valueLabel = regexprep(tL{2,1}{1}," ","\.");
         exp = "[A-Za-z|(|)]*";
         value = str2double(regexprep(valueLabel,exp,""));
-        exp = "[1-9]*\.?[1-9]*";
+        exp = "[0-9]*\.?[0-9]*";
         unit = regexprep(valueLabel,exp,"");
         amp = 0; freq = 0;
         

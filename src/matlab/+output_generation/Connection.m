@@ -21,7 +21,8 @@ classdef Connection
         function connect(obj, system)
             name = get_param(system,'Name');
             hPort = obj.getHead().getPort(system, obj.hPort);
-            tPort = obj.getTail().getPort(system, obj.tPort);        
+            tPort = obj.getTail().getPort(system, obj.tPort);
+            [obj.getHead().name obj.getTail().name]
             line = add_line(name,hPort,tPort,'autorouting','on');
         end
         
