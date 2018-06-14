@@ -97,7 +97,7 @@ The aim of this student project is, as stated in the abstract, to create a funct
 \end{figure}
 
 \par
-Initially, the program expects a digital image to be selected by the user. This image can be either a photography of a schematic on a sheet of paper or the image of a digitally created schematic. If the image is a photography, the program will first detect the boundaries of the sheet of paper in order to then rectify the image such that the sheet of paper lies entirely in the image plane. This implies that the entire paper is clearly included in the photography. After rectification, the photo can be trated in the same way digitally created schematic pictures are to be treated.
+Initially, the program expects a digital image to be selected by the user. This image can be either a photography of a schematic on a sheet of paper or the image of a digitally created schematic. If the image is a photography, the program will first detect the boundaries of the sheet of paper in order to then rectify the image such that the sheet of paper lies entirely in the image plane. This implies that the entire paper is clearly included in the photography. After rectification, the photo can be treated in the same way digitally created schematic pictures are to be treated.
 \par
 
 \begin{figure}[!ht]
@@ -119,13 +119,16 @@ Finally, after having detected elements and the connections in between, the \tex
 \label{subsec:spice}
 
 TODO 1
+\par
 TODO auch auf normierung eingehen
+\par
 
 \begin{figure}[!ht]
 \includegraphics[width = 3.2in]{img/cat.jpg}
 \caption{Examples of LTSpice-conform circuit elements}
 \label{fig:c4}
 \end{figure}
+\par
 
 TODO 2
 
@@ -140,8 +143,10 @@ Before being able to obtain the electrical circuit elements from the provided im
 \label{subsec:rect}
 
 When dealing with photographies, the depicted schematic may be distorted due to the surface not being aligned to the image plane. This has to be taken care of in order to use the object recognition approach presented in this work. Therefore, asserting that the entire surface and its corner points are included in the image, a rectification step is taken to bring the schematic onto the image plane.
+\par
 
 TODO explain rectification
+\par
 
 \begin{figure}[!ht]
 \includegraphics[width = 3.2in]{img/cat.jpg}
@@ -153,12 +158,14 @@ TODO explain rectification
 \label{subsec:ocr}
 
 In depictions of non-distorted or rectified schematics, MATLAB's OCR functionality can be used to retrieve text and its position within the image. After retrieval, the corresponding text regions in the image are erased, simplifying the following recognition of electrical elements and connections.
+\par
 
 \begin{figure}[!ht]
 \includegraphics[width = 3.2in]{img/cat.jpg}
 \caption{Some ocr img}
 \label{fig:c6}
 \end{figure}
+\par
 
 TODO OCR explanation
 
@@ -166,6 +173,7 @@ TODO OCR explanation
 \label{subsec:morph}
 
 After all text has been recognized and erased from the image, a binarized and thinned-out version of the image is prepared to further facilitate the following retrieval of lines, circles, corners and element template matchings. Both operations are done using pre-defined functions within MATLAB.
+\par
 
 \begin{figure}[!ht]
 \includegraphics[width = 3.2in]{img/cat.jpg}
@@ -188,11 +196,12 @@ The goal of the functions within the image analysis package is to retrieve all o
 \caption{Top: pre-processed image region. Bottom: retrieved geometric primitives: circles in blue, lines parallel to the axes in red, skewed lines in green and corners as green crosses.}
 \label{fig:c8}
 \end{figure}
+\par
 
 For lines, a parametrized hough transformation is used. The results are rearranged into a data structure including length and angle of all lines, using the given start- and endpoints of the lines.
 \par
 For circles and corners, which are unused in the current version of the program, predefined MATLAB functionality is used to detect the harris features of the image and the centers and radii of circles are found using a circular hough transform.
-
+\par
 In order to retrieve the scale of the elements, skewed lines are used because in rectified schematics conforming to LTSpice, they are used in resistors only. They can be used to retrieve their dimensions, when assuming that every schematic has at least one resistor and every resistor is conforming to the LTSpice regulations. Then, the greater one of the coordinate differences of full-length lines (of which one is highlighted in Image \ref{fig:c9}) along the axes corresponds to the shorter side of the resistor whereas four times the coordinate difference along the other axis corresponds to the longer side of the resistor.
 \par
 
@@ -213,23 +222,58 @@ TODO Cem
 \subsection{Wire Detection}
 \label{subsec:wire}
 
-After having detected the electrical elements and after having erased them from the image
+After having detected the electrical elements and after having erased them from the image, cables and connections are the only entities left in the image. Therefore, a second hough transformation application retrieves the endpoints of the connections between elements.
+\par
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/cat.jpg}
+\caption{Top: circuit image with detected elements. Bottom: The same circuit without the elelctrical elements and the recognized cables.}
+\label{fig:c10}
+\end{figure}
+
+\par
+After the wire detection, all detection results are passed onto the output generation module.
 
 % ---------------------------
 
 \section{Output Generation}
 \label{sec:output}
 
+In this module, the results of the image analysis routines are reframed and sent to SIMULINK in order to build an electrical circuit model. After its creation, the user can interact with the model which is also saved to enable further usage.
+
 \subsection{SIMSCAPE Electrical Model}
 \label{sec:sims}
 
+TODO Chris describe Model
+\par
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/cat.jpg}
+\caption{some model pic}
+\label{fig:c11}
+\end{figure}
+
 \subsection{Component Generation and Assembly}
 \label{sec:generation}
+
+TODO Chris describe the reshaping of our data so that you can use the SIMSCAPE Api
+\par
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/cat.jpg}
+\caption{some result model pic}
+\label{fig:c12}
+\end{figure}
 
 % EVAL----------------------------------------------------------
 
 \section{Evaluation}
 \label{sec:eval}
+
+Extensive evaluation is a key technique to determine the feasibility of the approach and its parts presented in this work. Therefore, every functionality should be tested qualitatively as well as quantitatively.
+\par
+
+TODO many eval!!
 
 % CONTRIB-------------------------------------------------------
 
@@ -239,13 +283,13 @@ After having detected the electrical elements and after having erased them from 
 \begin{table}[H]
 \resizebox{1.0\textwidth}{!}{\begin{minipage}{\textwidth}
 \centering
-\begin{tabular}{l|l l l}
-		Name & Intro & Research & Presentation \\ \hline
-		Andreas Boltres & 25\% & 25\% & 25\% \\
-		Cem G\"ul\c{s}an & 25\% & 25\% & 25\% \\
-		Christian Alexander Vecsei & 25\% & 25\% & 25\% \\
-		Thomas Frei & 25\% & 25\% & 25\% \\ \hline
-		& 100\% & 100\% & 100\% \\
+\begin{tabular}{l|l l l l}
+		Name & Intro & Research & Presentation & Spirit\\ \hline
+		Andreas Boltres & 25\% & 25\% & 25\% & 250\% \\
+		Cem G\"ul\c{s}an & 25\% & 25\% & 25\% & 250\% \\
+		Christian Alexander Vecsei & 25\% & 25\% & 25\% & 250\% \\
+		Thomas Frei & 25\% & 25\% & 25\% & 250\% \\ \hline
+		& 100\% & 100\% & 100\% & 1000\% \\
 \end{tabular}
 \caption{List of members and their contributions to the project.}
 \label{tab:contrib}
