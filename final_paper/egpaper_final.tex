@@ -92,7 +92,7 @@ The aim of this student project is, as stated in the abstract, to create a funct
 
 \begin{figure}[!ht]
 \includegraphics[width = 3.2in]{img/cat.jpg}
-\caption{Top: example screenshot of a circuit. Bottom: example photography of a circuit.}
+\caption{Top: example screenshot of a circuit. Bottom: example photography of a circuit}
 \label{fig:c2}
 \end{figure}
 
@@ -102,7 +102,7 @@ Initially, the program expects a digital image to be selected by the user. This 
 
 \begin{figure}[!ht]
 \includegraphics[width = 3.2in]{img/cat.jpg}
-\caption{ROI selection within a rectified photography.}
+\caption{ROI selection within a rectified photography}
 \label{fig:c3}
 \end{figure}
 
@@ -207,7 +207,7 @@ In order to retrieve the scale of the elements, skewed lines are used because in
 
 \begin{figure}[!ht]
 \includegraphics[width = 3.2in]{img/cat.jpg}
-\caption{Resistor template with highlighted full-length line and resistor dimension explanations.}
+\caption{Resistor template with highlighted full-length line and resistor dimension explanations}
 \label{fig:c9}
 \end{figure}
 
@@ -217,7 +217,102 @@ Using this heuristic, the size of a resistor can be estimated within tolerance o
 \subsection{Object Detection}
 \label{subsec:obj}
 
-TODO Cem
+The general approach used for object detection is a sliding-window approach. The structure of object detection goes as follows: 
+\begin{itemize}
+	\item Specific pre-processing for object detection
+	\item Sliding window: Generation of an error-image (difference from template to reference)
+	\item Get position of minimum error/maximum correlation
+	\item Ranking and selecting candidates
+	\item Return found elements
+\end{itemize}
+
+\subsubsection*{Preprocessing for Object Detection}
+
+Before the sliding window can be applied, the image needs to undergo specific preprocessing, which is an integral part of object detection. The template (i.e. a resistor) and the reference image (i.e. the circuit) are first binarized and then dilated. The dilating factor is an essential parameter and influences how tolerant the algorithm is of dissimilarities between the template image and actual representations of the template in the reference image. Increasing the dilation factor increases the change to find high-correlation areas but also decreases accuracy and precision. In figure \ref{fig:detPP1} and figure \ref{fig:detPP2} we can see a template and a reference image being (heavily) dilated.
+\par
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/cat.jpg}
+\caption{Dilated template}
+\label{fig:detPP1}
+\end{figure}
+\par
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/cat.jpg}
+\caption{Dilated reference image}
+\label{fig:detPP2}
+\end{figure}
+
+\subsubsection*{Sliding window and error-image}
+
+The preprocessed template is now sliding over the reference image, while a normalized mean-squared error (or difference value) is calculated at each position. The error values form the error image. Figure \ref{fig:detSW1} and\ref{fig:detSW2} each show a dilated reference image on the left and the corresponding error visualization on the right. Hereby, figure \ref{fig:detSW1} shows much lower dilation values than figure \ref{fig:detSW2}. Observing the error patterns, it is clear that the highly dilated image yields better results, but also more maxima where none should be.
+\par
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/cat.jpg}
+\caption{Slightly dilated reference image and resulting error image}
+\label{fig:detSW1}
+\end{figure}
+\par
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/cat.jpg}
+\caption{Heavily dilated reference image and resulting error image}
+\label{fig:detSW2}
+\end{figure}
+
+\subsubsection*{Get Maximum Correlation}
+
+Using the error image (or inverted: the correlation image), the algorithm tries to find significant maxima in the image. Noise and similarities between objects (e.g. grounds and resistors, or capacitors and wires) make the search for maxima difficult. The algorithm first supresses all values below a certain dynamic threshold and then binarizes again, using another dynamic threshold. Occasionally, the final binarization fails to produce good results and higher dilation values must be used. 
+\par
+Figure \ref{fig:detMX1} to \ref{fig:detMX3} show the different attempts to identify a capacitor, which is particularly hard to detect with certainty due to its very simple geometric shape. In figure \ref{fig:detMX1}, the target maximum is not significant enough and its value is too close to the rest of the error-image. The final binarization results in an all positive image. In figure \ref{fig:detMX2}, other areas have significant - although faulty - maxima aswell, resulting in a faulty final binarization. Figure \ref{fig:detMX3} shows a successful suppression of minima and a successful binarization, with an isolated, significant dot as result. 
+\par
+The algorithm detects those isolated dots and decides whether it has found an object at concerned position, whether it needs to use different parameters or whether there is no element of this kind to be found.
+\par
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/cat.jpg}
+\caption{Faulty binarization - main maximum too insignificant}
+\label{fig:detMX1}
+\end{figure}
+\par
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/cat.jpg}
+\caption{Faulty binarization – false maxima detected}
+\label{fig:detMX2}
+\end{figure}
+\par
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/cat.jpg}
+\caption{Successful binarization}
+\label{fig:detMX3}
+\end{figure}
+
+\subsubsection*{Ranking and Selecting Candidates}
+
+As mentioned before, the algorithm is prone to confuse different elements with each other, provided they share geometric similarities. When dilating template and reference image, this confusion gets worse as the tolerance for non-perfect matches increases. Frequently, multiple elements are detected (with varying tolerance) in the same area in the reference image. To counteract this, the algorithm assigns a score to each found element relating to its certainty. After the algorithm searched for all elements, it checks whether the found elements are out of bounds (the edges of the reference image are prone to faulty maxima) and compares their store against each other. 
+\par
+Figure \ref{fig:detRS1} shows all found candidates for this particular example. Attached to each found element is a confidence score, with lower scores being better. When two or more elements occupy the same area, the element with the lower score gets priority and the others are deleted. The result of this selection process can be seen in figure \ref{fig:detRS2}.
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/cat.jpg}
+\caption{All candidate elements with scores}
+\label{fig:detRS1}
+\end{figure}
+\par
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/cat.jpg}
+\caption{Selected candidates (final result)}
+\label{fig:detRS2}
+\end{figure}
+
+\subsubsection*{Return Found Elements}
+
+The found and selected elements are stored and returned to the main image analysis function for further processing. In the image, the areas of the found elements are erased to enable the following wire detection.
 
 \subsection{Wire Detection}
 \label{subsec:wire}
