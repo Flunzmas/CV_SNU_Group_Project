@@ -365,10 +365,61 @@ TODO Chris describe the reshaping of our data so that you can use the SIMSCAPE A
 \section{Evaluation}
 \label{sec:eval}
 
-Extensive evaluation is a key technique to determine the feasibility of the approach and its parts presented in this work. Therefore, every functionality should be tested qualitatively as well as quantitatively.
+Extensive evaluation is a key technique to determine the feasibility of the approach and its parts presented in this work. Therefore, every functionality should be tested qualitatively as well as quantitatively. For this purpose, a bunch of electrical circuit schematics have been created; the algorithm's parts will be tested on each of these images. 
 \par
 
-TODO many eval!!
+\subsection{Rectification}
+
+TODO
+
+\subsection{OCR}
+
+TODO
+
+\subsection{Scale Retrieval}
+
+In order to evaluate the performance of the scale retrieval routine, the dimensions of the resistors of each image has been measured manually. Thereafter, each image was sent through the program until the resistor dimensions were retrieved. In table \ref{tab:resdim}, the dimensions of resistors in each image (column \textit{Measured}) can be found alongside the dimensions retrieved by the algorithm for each picture (column \textit{Calculated}) and a maximum deviance of the resistor size for each dimension. A manual measurement tolerance of one pixel is included in this maximum deviance metric.
+\par
+
+\begin{table}[H]
+\centering
+\begin{tabular}{l|l|l|l|l}
+		File & h/v & Measured & Calculated & Deviance\\ \hline
+		01.png & horiz. & $180\times91$ & $180\times88$ & $<1\times4$ \\ \hline
+		02.png & vert. & $91\times180$ & $90\times194$ & $<2\times5$ \\ \hline
+		03.png & horiz. & $180\times90$ & $176\times87$ & $<5\times4$ \\ \hline
+		04.png & horiz. & $140\times71$ & $140\times69$ & $<1\times3$ \\ \hline
+		05.png & vert. & $46\times92$ & $46\times96$ & $<1\times5$ \\ \hline
+		06.png & vert. & $46\times92$ & $46\times96$ & $<1\times5$ \\ \hline
+		07.png & horiz. & $206\times103$ & $208\times102$ & $<3\times2$ \\ \hline
+		08.png & vert. & $108\times215$ & $106\times216$ & $<3\times2$ \\ \hline
+		09.png & vert. & $85\times169$ & $83\times168$ & $<3\times2$ \\ \hline
+		10.png & vert. & $127\times255$ & $126\times256$ & $<2\times2$ \\ \hline
+		11.png & horiz. & $216\times108$ & $216\times107$ & $<1\times2$ \\ \hline
+		12.png & vert. & $109\times216$ & $108\times212$ & $<2\times5$ \\ \hline
+		13.png & horiz. & $199\times100$ & $200\times98$ & $<2\times3$ \\ \hline
+		14.png & vert. & $94\times185$ & $91\times184$ & $<4\times2$ \\ \hline
+		15.png & horiz. & $265\times133$ & $264\times130$ & $<2\times4$ \\ \hline
+		16.png & horiz. & $215\times108$ & $216\times106$ & $<2\times3$ \\ \hline
+		17.png & vert. & $98\times195$ & $94\times192$ & $<5\times4$ \\ \hline
+		18.png & vert. & $108\times215$ & $108\times224$ & $<\textcolor[rgb]{0.8,0,0}{1\times10}$ \\ \hline
+		19.png & vert. & $118\times235$ & $114\times232$ & $<5\times4$ \\ \hline
+		20.png & horiz. & $245\times122$ & $248\times120$ & $<4\times3$ \\ \hline
+\end{tabular}
+\caption{Resistor size measurements and estimations (in px)}
+\label{tab:resdim}
+\end{table}
+\par
+
+A maximum deviance of 5 pixels is considered satisfactory for an effective usage of the object detection algorithm. With the exception of one case, the scale retrieval algorithm could retrieve the resistor size in all images it got called on. This corresponds to an accuracy of 95\%.
+
+\subsection{Object Detection}
+
+TODO
+
+\subsection{Wire Detection}
+
+TODO
 
 % CONTRIB-------------------------------------------------------
 
