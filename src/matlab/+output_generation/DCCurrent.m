@@ -1,4 +1,4 @@
-classdef DCCurrent < Source
+classdef DCCurrent < output_generation.Source
     %DCVOLTAGE Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -8,13 +8,13 @@ classdef DCCurrent < Source
     
     methods
         function obj = DCCurrent(name, x, y, orientation, ampere)
-            obj = obj@Source(name, x, y, orientation);
+            obj = obj@output_generation.Source(name, x, y, orientation);
             obj.ampere = ampere;
             obj.simscapeObjName = 'DC Current Source';
         end
         
         function block = addToSystem(obj, system)
-            block = obj.addToSystem@Source(system);
+            block = obj.addToSystem@output_generation.Source(system);
             set_param(block,'i0',num2str(obj.getAmpere()));
         end
         

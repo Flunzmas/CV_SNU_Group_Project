@@ -1,7 +1,7 @@
 % Entry function for the EC component recognition. Takes a given
 % preprocessing result and creates a data structure with all relevant EC
 % components which should form part of the simulink model to be built.
-function components = analyse_image(im_binarized, im_thin, im_mute)
+function [elem_list, connection_endpoints] = analyse_image(im_binarized, im_thin, im_mute)
 
 %% object recognition parameters
 hough_rho_resolution = 0.5;
@@ -58,9 +58,6 @@ connection_lines = im_analysis.retrieve_lines(im_connections, ...
 line_angles = connection_lines(:,2);
 connection_lines = connection_lines(min(mod(line_angles, 90), mod(-line_angles, 90)) < axis_angle_tol, :);
 connection_endpoints = connection_lines(:, 3:6);
-
-%% fill the 'components' data structure
-components = 0; % TODO
 
 %% [for debugging] show stuff
 

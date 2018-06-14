@@ -1,4 +1,4 @@
-classdef ACVoltage < Source
+classdef ACVoltage < output_generation.Source
     %ACVOLTAGE Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -9,14 +9,14 @@ classdef ACVoltage < Source
     
     methods
         function obj = ACVoltage(name, x, y, orientation, amplitude, frequency)
-            obj = obj@Source(name, x, y, orientation);
+            obj = obj@output_generation.Source(name, x, y, orientation);
             obj.amplitude = amplitude;
             obj.frequency = frequency;
             obj.simscapeObjName = 'AC Voltage Source';
         end
         
         function block = addToSystem(obj, system)
-            block = obj.addToSystem@Source(system);
+            block = obj.addToSystem@output_generation.Source(system);
             set_param(block,'amp',num2str(obj.getAmplitude()));
             set_param(block,'frequency',num2str(obj.getFrequency()));
         end

@@ -3,8 +3,8 @@ function connections = process_wires(elementList, objects, wires)
 %   Detailed explanation goes here
 
     objCount = size(elementList,1);
-    ports = zeros(objCount*2,3);
-    threshold = 5;
+    ports = zeros(objCount*2,4);
+    threshold = 10;
     connections = [];
     
     % find estimated location of ports
@@ -20,74 +20,80 @@ function connections = process_wires(elementList, objects, wires)
             ports(i*2-1,2) = e{3}(2) + (e{4}(2) - e{3}(2))/2;
             ports(i*2,1) = e{4}(1);
             ports(i*2,2) = e{4}(2) - (e{4}(2) - e{3}(2))/2;
+            ports(i*2-1,4) = 0;
+            ports(i*2,4) = 1;
         elseif e{2}=="vert"
             ports(i*2-1,2) = e{3}(2);
             ports(i*2-1,1) = e{3}(1) + (e{4}(1) - e{3}(1))/2;
             ports(i*2,2) = e{4}(2);
             ports(i*2,1) = e{4}(1) - (e{4}(1) - e{3}(1))/2;
+            ports(i*2-1,4) = 0;
+            ports(i*2,4) = 1;
         end
     end
+    points = [];
+    pcopy = ports;
     
-    wire = 0;
-    for i=1:1:size(ports,1)
-        obj1 = 0; obj2 = 0; port1 = 0; port2 = 0;
-        newCoords = zeros(2);
-        % find the wire connected to the port
-        for j=1:1:size(wires,1)
-            d1 = calc_distance([ports(i,1) ports(i,2)], [wires(j,1) wires(j,2)]);
-            d2 = calc_distance([ports(i,1) ports(i,2)], [wires(j,3) wires(j,4)]);
-            
-            if d1 < threshold 
-                obj1 = objects(ports(i,3));
-                newCoords = [wires(j,3) wires(j,4)];
-                wire = j;
-                if mod(i,2) == 1
-                    port1 = '+';
-                else
-                    port1 = '-';
-                end
-                break
+    while size(pcopy,1) > 0
+        % find all endpoints of wires leading from the first port
+        points = [];
+        wind = [];
+        for i=1:1:size(wires,1)
+            d1 = output_generation.calc_distance([pcopy(1,1) pcopy(1,2)], [wires(i,1) wires(i,2)]);
+            d2 = output_generation.calc_distance([pcopy(1,1) pcopy(1,2)], [wires(i,3) wires(i,4)]);
+            if d1 < threshold
+                points = cat(1,points,wires(i,3:4));
+                wind = cat(1,wind,i);
             elseif d2 < threshold
-                obj1 = objects(ports(i,3));
-                newCoords = [wires(j,1) wires(j,2)];
-                wire = j;
-                if mod(i,2) == 1;
-                    port1 = '+';
-                else
-                    port1 = '-';
-                end
-                break
+                points = cat(1,points,wires(i,1:2));
+                wind = cat(1,wind,i);
             end
         end
         
-        % find direct connections
-        found = 0;
-        j=1;
-        for j=1:1:size(ports,1)
-            d = calc_distance(newCoords, [ports(j,1) ports(j,2)]);
-            t = wires(j) - [newCoords(1) newCoords(2) ports(j,1) ports(j,2)];
-            if d < threshold
-                obj2 = objects(ports(j,3));
-                found = 1;
-                break;
-            end
+        % remove the wires leading to the found points
+        wcopy = wires;
+        for i=1:1:size(wind,1)
+            wcopy = cat(1,wcopy(1:wind(i)-1,:),wcopy(wind(i)+1:size(wcopy,1),:));
+            wind = wind -1;
         end
         
-        if found == 1
-            if mod(j,2) == 1;
-                port2 = '+';
+        % search ports connected to those points
+        port = pcopy(1,:);
+        for i=1:1:size(points,1)
+            p = output_generation.find_next_port(points(i,:),pcopy,wcopy);
+            port = cat(1,port,p);
+        end
+        
+        % connect ports
+        head = objects(port(1,3));
+        if port(1,4) == 0
+            hport = "+";
+        else
+            hport = "-";
+        end
+        for i=2:1:size(port)
+            tail = objects(port(i,3));
+            if port(i,4) == 0
+                tport = "+";
             else
-                port2 = '-';
+                tport = "-";
             end
-            if size(connections,1) == 0
-                connections = [Connection(obj1, port1, obj2, port2)];
-            else
-                connections(size(connections,1)+1) = Connection(obj1, port1, obj2, port2);
-            end
-            wires(wire,:) = [0 0 0 0]; % make wire unusable in next steps
+            connections = cat(1,connections,output_generation.Connection(head,hport,tail,tport));
+        end
+        
+        % remove connected ports
+        p = pcopy;
+        pcopy = [];
+        for i=1:1:size(p)
             found = 0;
+            for j=1:1:size(port)
+                if (port(j,:) == p(i,:))
+                    found = 1;
+                end
+            end
+            if found == 0
+                pcopy = cat(1,pcopy,p(i,:));
+            end
         end
     end
-    connections = transpose(connections);
-end
 
