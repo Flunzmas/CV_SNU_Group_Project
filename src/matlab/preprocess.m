@@ -19,40 +19,39 @@ imshow(im_original);
 title('select area of filter');
 coords = floor(ginput(2));
 
-%select area
+% select area
 im_original = im_original(coords(1,2):coords(2,2),coords(1,1):coords(2,1));
 
 %% OCR and text removal
-% imshow(im_original) ### no need for this I think ###
 [im_mute, ocrResult] = preprocessing.ocrCircuit(im_original);
 
-%until user action
+% until user action
 while(1)
     
-    %show image
+    % show image
     imshow(im_mute);
     
-    %open question dialog
+    % open question dialog
     answer = questdlg('Did I remove all the text?', ...
         'Remaining Text', ...
         'Yes', 'No','Yes');
     
-    %break loop
+    % break loop
     if(strcmp(answer,'Yes'))
         break;
     end
 
-    %retrieve coordinates
+    % retrieve coordinates
     title('select text area');
     coords = floor(ginput(2));
     
-    %convert to roi syntax
+    % convert to roi syntax
     roi = [coords(1,1) coords(1,2) coords(2,1)-coords(1,1) coords(2,2)-coords(1,2)];
 
-    %detect again with new roi
+    % detect again with new roi
     [im_mute, ocrResultN] = preprocessing.ocrCircuit(im_mute, roi);
     
-    %append result
+    % append result
     if(~isempty(ocrResultN.words))
         ocrResult.wordBoundingBoxes(end+1,:) = ocrResultN.wordBoundingBoxes;
         ocrResult.words{end+1} = ocrResultN.words{:};
@@ -62,7 +61,7 @@ end
 left = [];
 right = [];
 
-%check for split ()
+% check for split ()
 for k=1:numel(ocrResult.words)
     if(strfind(ocrResult.words{k}, '('))
         left = k;
@@ -71,16 +70,17 @@ for k=1:numel(ocrResult.words)
     end
 end
 
-%concatenate
+% concatenate
 if(~isempty(left) && ~isempty(right))
-    %rewrite left
+    
+    % rewrite left
     ocrResult.words{left} = [ocrResult.words{left} ' ' ocrResult.words{right}];
     ocrResult.wordBoundingBoxes(left, :) = [ocrResult.wordBoundingBoxes(left, 1) ...
                                             ocrResult.wordBoundingBoxes(right, 2) ...
                                             ocrResult.wordBoundingBoxes(left, 3) ...
                                             ocrResult.wordBoundingBoxes(right, 4) ];
                    
-    %delete right
+    % delete right
     ocrResult.words(right) = [];
     ocrResult.wordBoundingBoxes(right,:) = [];
 end
