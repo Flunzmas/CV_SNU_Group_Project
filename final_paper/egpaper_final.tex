@@ -76,7 +76,7 @@ With increasing size, electrical circuits often become more complicated and conf
 \par
 
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
+\includegraphics[width = 3.2in]{img/circuits.png}
 \caption{Example circuits}
 \label{fig:c1}
 \end{figure}
@@ -91,8 +91,8 @@ The aim of this student project is, as stated in the abstract, to create a funct
 \par
 
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
-\caption{Top: example screenshot of a circuit. Bottom: example photography of a circuit}
+\includegraphics[width = 3.2in]{img/S04.JPG}
+\caption{Example photography of a circuit}
 \label{fig:c2}
 \end{figure}
 
@@ -114,23 +114,6 @@ Following up is the \textbf{retrieval of geometric primitives} within the images
 Using the knowledge of the components' scale, the \textbf{object detection} is done using a sliding window to retrieve the location and orientation of electrical elements in the image. Following up is the \textbf{detection of wires} based on the image after deletion of the detected elements. See subsections \ref{subsec:obj} and \ref{subsec:wire} for more detailled descriptions.
 \par
 Finally, after having detected elements and the connections in between, the \textbf{output generation} model uses the objectified results of the image analysis and creates and fills a Simulink model. This model will then be shown and saved for further usage. Refer to section \ref{sec:output} for further imformation.
-
-\subsection{LTSpice}
-\label{subsec:spice}
-
-TODO 1
-\par
-TODO auch auf normierung eingehen
-\par
-
-\begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
-\caption{Examples of LTSpice-conform circuit elements}
-\label{fig:c4}
-\end{figure}
-\par
-
-TODO 2
 
 % MAIN----------------------------------------------------------
 
@@ -174,12 +157,6 @@ TODO OCR explanation
 
 After all text has been recognized and erased from the image, a binarized and thinned-out version of the image is prepared to further facilitate the following retrieval of lines, circles, corners and element template matchings. Both operations are done using pre-defined functions within MATLAB.
 \par
-
-\begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
-\caption{Left: image region before binarization and line thinning. Right: the same image region after binarization and line thinning.}
-\label{fig:c7}
-\end{figure}
 
 % ---------------------------
 
@@ -368,6 +345,28 @@ TODO Chris describe the reshaping of our data so that you can use the SIMSCAPE A
 Extensive evaluation is a key technique to determine the feasibility of the approach and its parts presented in this work. Therefore, every functionality should be tested qualitatively as well as quantitatively. For this purpose, a bunch of electrical circuit schematics have been created; the algorithm's parts will be tested on each of these images. 
 \par
 
+\subsection{LTSpice and assertions}
+\label{subsec:spice}
+
+In order for the presented approach to produce meaningful results, a few assertions have to be made concerning the design of the circuits and the appearance of its elements:
+
+\begin{itemize}
+	\item Circuit images are generated with LTSpice\footnote[1]{http://www.analog.com/en/design-center/design-tools-and-calculators.html?domain=www.linear.com\#LTspice}, which uses normed representations of all relevant circuit elements. These representations match the templates used in the sliding-window approach.
+	\item circuits are drawn with black colors on a white background. In photographies: The contrast between circuit and background should be sufficient.
+	\item In photographies: All four corners of the rectangular surface on which the circuit is depicted have to be visible.
+	\item Values of electrical properties of elements range from $1p$ ($1 * 10^{-12}$) to $999G$ ($999* 10^{9}$).
+	\item Every circuit has at least one resistor. All circuits are RLC-Circuits with one source of voltage.
+	\item All electrical circuit elements and connections are oriented either vertically or horizontally.
+	\item There is sufficient white space between elements and pieces of text.
+\end{itemize}
+\par
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/elements.png}
+\caption{Examples of LTSpice-conform circuit elements}
+\label{fig:c4}
+\end{figure}
+
 \subsection{Rectification}
 
 TODO
@@ -417,15 +416,20 @@ A maximum deviance of 5 pixels is considered satisfactory for an effective usage
 
 TODO
 
-\subsection{Wire Detection}
-
-TODO
-
 % CONCLUSION----------------------------------------------------
 
 \section{Conclusion}
 
-\textbf{Yessss!}
+This paper introduced a method to digitalize electrical circuits given in form of an image, using a sliding-window approach for the detection of the electrical elements of the circuit. Despite the staticness of this approach, using certain assumptions concerning the appearance of the circuit and its parts, the algorithm produced exact models and accurate topographies in a relatively stable manner.
+
+\subsection*{Ideas for future work}
+
+Despite promising results, there are several measures which could improve this work:
+\begin{itemize}
+	\item A limiting factor of this approach, especially when dealing with photographies, was the detection of lines using MATLAB's hough transformation implementation. Implementing a new and custom hough transformation is a promising way to make the retrieval of connections mroe robust.
+	\item Similar to MATLAB's hough transform, its OCR functionality also struggled to correctly and robustly detect the text in the test schematics. A proper OCR solution would increase the robustness of the whole procedure just like an improved hough transform would.
+	\item Within the object detection, instead of the comparison of image regions with the respective templates and the following calculation of error images, the process of finding electrical elements could be made more abstract, e.g. by comparing histograms of geometrical primitive imformations such as line length and angle instead of comparing color values pixel by pixel. Such an abstraction can potentially increase the tolerance of the object detection algorithm regarding the deviance of the found circuit elements from the template.
+\end{itemize}
 
 % CONTRIB-------------------------------------------------------
 
@@ -433,19 +437,17 @@ TODO
 \label{sec:contrib}
 
 \begin{table}[H]
-\resizebox{1.0\textwidth}{!}{\begin{minipage}{\textwidth}
 \centering
 \begin{tabular}{l|l l l l}
-		Name & Intro & Research & Presentation & Spirit\\ \hline
+		Name & Intro & Research & Pres. & Spirit\\ \hline
 		Andreas Boltres & 25\% & 25\% & 25\% & 250\% \\
 		Cem G\"ul\c{s}an & 25\% & 25\% & 25\% & 250\% \\
-		Christian Alexander Vecsei & 25\% & 25\% & 25\% & 250\% \\
+		Christian Vecsei & 25\% & 25\% & 25\% & 250\% \\
 		Thomas Frei & 25\% & 25\% & 25\% & 250\% \\ \hline
 		& 100\% & 100\% & 100\% & 1000\% \\
 \end{tabular}
 \caption{List of members and their contributions to the project.}
 \label{tab:contrib}
-\end{minipage} }
 \end{table}
 
 \end{document}
