@@ -205,7 +205,7 @@ The general approach used for object detection is a sliding-window approach. The
 
 \subsubsection*{Preprocessing for Object Detection}
 
-Before the sliding window can be applied, the image needs to undergo specific preprocessing, which is an integral part of object detection. The template (i.e. a resistor) and the reference image (i.e. the circuit) are first binarized and then dilated. The dilating factor is an essential parameter and influences how tolerant the algorithm is of dissimilarities between the template image and actual representations of the template in the reference image. Increasing the dilation factor increases the change to find high-correlation areas but also decreases accuracy and precision. In figure \ref{fig:detPP1} and figure \ref{fig:detPP2} we can see a template and a reference image being (heavily) dilated.
+Before the sliding window can be applied, the image needs to undergo specific preprocessing, which is an integral part of object detection. The template (i.e. a resistor) and the reference image (i.e. the circuit) are first binarized, scaled down for performance and then dilated. The dilating factor is an essential parameter and influences how tolerant the algorithm is of dissimilarities between the template image and actual representations of the template in the reference image. Increasing the dilation factor increases the change to find high-correlation areas but also decreases accuracy and precision. In figure \ref{fig:detPP1} and figure \ref{fig:detPP2} we can see a template and a reference image being (heavily) dilated. A scaling factor between 0.1 and 0.4 proofs to be both relative fast and still returns good results.
 \par
 
 \begin{figure}[!ht]
@@ -382,8 +382,8 @@ In order to evaluate the performance of the scale retrieval routine, the dimensi
 
 \begin{table}[H]
 \centering
-\begin{tabular}{l|l|l|l|l}
-		File & h/v & Measured & Calculated & Deviance\\ \hline
+\begin{tabular}{l|l|l|l|l} \hline
+		File & h/v & Measured & Calculated & Deviance\\ \hline \hline
 		01.png & horiz. & $180\times91$ & $180\times88$ & $<1\times4$ \\ \hline
 		02.png & vert. & $91\times180$ & $90\times194$ & $<2\times5$ \\ \hline
 		03.png & horiz. & $180\times90$ & $176\times87$ & $<5\times4$ \\ \hline
@@ -414,7 +414,102 @@ A maximum deviance of 5 pixels is considered satisfactory for an effective usage
 
 \subsection{Object Detection}
 
-TODO
+To evaluate the object detection algorithm, perfectly prepared images (screenshots of circuits without text) were used. The algorithm was tested on how well it detected all objects correctly and on the number of phantom detections, which are detections without actual objects being at concerned places.
+\par
+Through tables \ref{tab:det1} (collected data) and \ref{tab:det2} (main results), the following conclusions can be made:
+\begin{itemize}
+	\item There is a 4.8\% miss rate; The chance that an object is misclassified.
+	\item There is a 3.9\% not-detection rate; The chance that an object is not recognized at all.
+	\item There is a 7.4\% phantom rate; The chance that additional objects are recognized, where none actually are. This is in relation to total actual objects.
+	\item The ratio between total number of candidates and total number of selected objects is 25\%, ranging from 13\% to 35\%.
+	\item The correct identification rate, that is the number of correctly identified objects in relation to the number of actual present objects, is 90.9\%
+\end{itemize}
+\par
+
+The detection algorithm performs well in certain circumstances. The detection algorithm has severe difficulties when the input images are not well rectified or cleaned (no text, no noise). The most common error sources were ground- or capacitor elements being recognized where none were, or where other sources were. This can be explained by their very simple and common shape. Voltage sources were also often misidentified or placed where no objects actually were (phantom objects).
+\par
+
+\begin{table}[H]
+\centering
+\begin{tabular}{l|l|l|l|l|l|l|l} \hline
+		ID & EL & CC & SC & Cdet & Mdet & Ndet & Pdet \\ \hline \hline
+		1&6&18&7&6&0&0&1\\ \hline
+		2&6&17&6&6&0&0&0\\ \hline
+		3&8&23&8&8&0&0&0\\ \hline
+		4&9&22&10&9&0&0&1\\ \hline
+		5&9&19&9&8&1&0&0\\ \hline
+		6&11&26&11&10&1&0&0\\ \hline
+		7&8&18&8&8&0&0&0\\ \hline
+		8&5&24&5&5&0&0&0\\ \hline
+		9&11&35&12&11&0&0&1\\ \hline
+		10&7&13&7&7&0&0&0\\ \hline
+		11&8&24&9&8&0&0&1\\ \hline
+		12&6&35&5&4&0&2&1\\ \hline
+		13&5&15&6&5&0&0&1\\ \hline
+		14&7&21&9&6&1&0&2\\ \hline
+		15&7&17&6&6&0&1&0\\ \hline
+		16&6&22&7&5&0&1&2\\ \hline
+		17&9&25&10&9&0&0&1\\ \hline
+		18&7&28&7&6&0&1&1\\ \hline
+		19&7&24&7&6&0&1&1\\ \hline
+		20&7&22&6&5&0&2&1\\ \hline
+		21&9&24&10&9&0&0&1\\ \hline
+		22&8&30&9&7&1&0&0\\ \hline
+		23&9&25&9&9&0&0&0\\ \hline
+		24&7&13&7&6&1&0&0\\ \hline
+		25&9&36&9&8&1&0&0\\ \hline
+		26&7&32&10&6&1&0&2\\ \hline
+		27&8&29&7&7&0&1&0\\ \hline
+		28&8&36&8&6&2&0&0\\ \hline
+		29&7&28&7&6&1&0&0\\ \hline
+		30&8&29&8&7&1&0&0\\ \hline \hline
+			& REL & & & & 4.8\% & 3.9\% & 7.4\% \\ \hline
+\end{tabular}
+\caption{Collected data from tests. ID: Test image ID, EL: Nr. of correct elements, CC: Candidate Count, SC: Selected Count, Cdet: Correctly detected, Mdet: Misdetected, Ndet: Not detected, Pdet: Phantom detected}
+\label{tab:det1}
+\end{table}
+\par
+
+\begin{table}[H]
+\centering
+\begin{tabular}{l|l|l|l} \hline
+		ID & SR\% & ELEM & CORR\% \\ \hline \hline
+		1&28\%&6&100\%\\ \hline
+		2&26\%&6&100\%\\ \hline
+		3&26\%&8&100\%\\ \hline
+		4&31\%&9&100\%\\ \hline
+		5&32\%&9&89\%\\ \hline
+		6&30\%&11&91\%\\ \hline
+		7&31\%&8&100\%\\ \hline
+		8&17\%&5&100\%\\ \hline
+		9&26\%&11&100\%\\ \hline
+		10&35\%&7&100\%\\ \hline
+		11&27\%&8&100\%\\ \hline
+		12&13\%&6&67\%\\ \hline
+		13&29\%&5&100\%\\ \hline
+		14&30\%&7&86\%\\ \hline
+		15&26\%&7&86\%\\ \hline
+		16&24\%&6&83\%\\ \hline
+		17&29\%&9&100\%\\ \hline
+		18&20\%&7&86\%\\ \hline
+		19&23\%&7&86\%\\ \hline
+		20&21\%&7&71\%\\ \hline
+		21&29\%&9&100\%\\ \hline
+		22&23\%&8&88\%\\ \hline
+		23&26\%&9&100\%\\ \hline
+		24&35\%&7&86\%\\ \hline
+		25&20\%&9&89\%\\ \hline
+		26&24\%&7&86\%\\ \hline
+		27&19\%&8&88\%\\ \hline
+		28&18\%&8&75\%\\ \hline
+		29&20\%&7&86\%\\ \hline
+		30&22\%&8&88\%\\ \hline \hline
+		Avg & 25\% & & 90.9\%\\ \hline
+\end{tabular}
+\caption{Caption: Results of evaluation. ID: Test image ID, SR\%: Selected Ratio, ELEM: Nr. of correct elements, CORR\%: Correct ratio}
+\label{tab:det2}
+\end{table}
+\par
 
 % CONCLUSION----------------------------------------------------
 
@@ -438,13 +533,19 @@ Despite promising results, there are several measures which could improve this w
 
 \begin{table}[H]
 \centering
-\begin{tabular}{l|l l l l}
-		Name & Intro & Research & Pres. & Spirit\\ \hline
-		Andreas Boltres & 25\% & 25\% & 25\% & 250\% \\
-		Cem G\"ul\c{s}an & 25\% & 25\% & 25\% & 250\% \\
-		Christian Vecsei & 25\% & 25\% & 25\% & 250\% \\
-		Thomas Frei & 25\% & 25\% & 25\% & 250\% \\ \hline
-		& 100\% & 100\% & 100\% & 1000\% \\
+\begin{tabular}{l|l l l} \hline
+		Name & Proposal & Research & Pres.\\ \hline
+		Andreas Boltres & 25\% & 25\% & 25\% \\
+		Cem G\"ul\c{s}an & 25\% & 25\% & 25\% \\
+		Christian Vecsei & 25\% & 25\% & 25\% \\
+		Thomas Frei & 25\% & 25\% & 25\%  \\ \hline
+		& 100\% & 100\% & 100\% \\ \hline \hline
+		     & Paper & Spirit & Candy\\ \hline
+		Andreas Boltres & 25\% & 25\% & 25\% \\
+		Cem G\"ul\c{s}an & 25\% & 25\% & 25\% \\
+		Christian Vecsei & 25\% & 25\% & 25\% \\
+		Thomas Frei & 25\% & 25\% & 25\% \\ \hline
+		& 100\% & 100\% & 100\% \\ \hline
 \end{tabular}
 \caption{List of members and their contributions to the project.}
 \label{tab:contrib}
