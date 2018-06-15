@@ -6,10 +6,11 @@ function elementList = detectElements(i_testRGB, resSize)
 %elementList returns a cell array of found elements:
 %See elementList is formatted according to "cellArrayExample.m"
 
-fprintf("\n-----------------------\n");
-fprintf(" >>>Start\tdetectElements\n");
-vis1 = 1;
-vis2 = 0;
+%fprintf("\n-----------------------\n");
+%fprintf(" >>>Start\tdetectElements\n");
+vis1 = 1;   %show selected candidates
+vis2 = 0;   %show individual found elements
+vis3 = 0;   %show candidates and scores
 
 
 %% Parameters
@@ -80,10 +81,10 @@ vis2 = 0;
         
         %Check if no elements have been found
         if isnan(elCoords)       
-            fprintf("\tfindElement found no elements of type <%s>\n", elType);
+            %fprintf("\tfindElement found no elements of type <%s>\n", elType);
         else
             elFound     = size(elCoords, 1);
-            fprintf("\tfindElement found %d element(s) of type <%s>\n", elFound, elType);
+            %fprintf("\tfindElement found %d element(s) of type <%s>\n", elFound, elType);
 
             %Store found element information in elList
             for j = 1:elFound
@@ -179,11 +180,18 @@ vis2 = 0;
 %             elementList(elCountPost, :) = elList(i, 1:4);
 %         end
 %     end
+
+
+    % Get and print stats
+    fprintf("-------Detection stats------\n");
+    fprintf("\tCandidate count:\t%d\n", size(elList, 1));
+    fprintf("\tSelected count:\t\t%d\n", size(elementList, 1));
+    fprintf("\tSelection ratio:\t%d%s\n", round(100 * size(elementList, 1)/size(elList, 1)), '%');
    
 
 %% Visualization
     % Show all potential elements
-    if vis1
+    if vis3
         elemRects   = zeros(elCountPre, 4);
         elemMarks   = zeros(elCountPre, 2);
         elemTexts   = zeros(elCountPre, 2);
@@ -245,8 +253,8 @@ vis2 = 0;
     end
     
     
-fprintf(" >>>End\tdetectElements\n");
-fprintf("-----------------------\n\n");
+%fprintf(" >>>End\tdetectElements\n");
+%fprintf("-----------------------\n\n");
 
 end
     

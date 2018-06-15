@@ -1,6 +1,6 @@
 function prepImage = ppDetection(i_input, bw_thresh, r_thicken, sigma, scale)
     
-fprintf("   >Start\tppDetection");
+%fprintf("   >Start\tppDetection");
 vis = 0;
 
     %i_blurr     = imgaussfilt(i_input, sigma);
@@ -20,6 +20,6 @@ end
     
     prepImage   = i_resize;   
     
-fprintf("\t\t...Ended\n");
+%fprintf("\t\t...Ended\n");
     
 return
