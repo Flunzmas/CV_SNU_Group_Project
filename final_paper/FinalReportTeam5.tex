@@ -87,7 +87,7 @@ A program that confidently identifies the components of a schematic with their r
 \subsection{Program overview}
 \label{subsec:over}
 
-The aim of this student project is, as stated in the abstract, to create a functionality developed within the computing environment MATLAB, analyzing schematics of electrical circuits and transforming them into an electrical circuit model within MATLAB's Simulink environment. There, it can be used to facilitate calculations or behaviour analyses. The process of obtaining the Simulink model from the given image can be divided into three phases which will be briefly described in the following sentences and in detail in the following sections.
+The aim of this student project is, as stated in the abstract, to create a functionality developed program within the computing environment MATLAB, analyzing schematics of electrical circuits and transforming them into an electrical circuit model within MATLAB's Simulink environment. There, it can be used to facilitate calculations or behaviour analyses. The process of obtaining the Simulink model from the given image can be divided into three phases which will be briefly described in the following sentences and in detail in the following sections.
 \par
 
 \begin{figure}[!ht]
@@ -326,11 +326,11 @@ In this module, the results of the image analysis routines are reframed and sent
 In this the step the problem takes all the data which has been gathered in the previous steps and generated the Simescape model from it. Simscape is a special library for Simulink to simulate physical systems.
 
 \subsection{Object Generation}
-The input to the Object Generation are on one hand the Elements detected in the Object Detection. On the other hand the OCR input is used to find the values and labels corresponding to the input. LTSPICE models have the property, that the Label is always above the value. So to assign them to an object we search the labels closest to the detected object by taking the center coordinates of the object and then calculating the distance to the centers of all labels with the formula
+The input to the Object Generation are on one hand the Elements detected in the Object Detection. On the other hand the OCR input is used to find the values and labels corresponding to the objects. LTSPICE models have the property, that the Label is always above the value. So to assign them to an object we search the labels closest to the detected object by taking the center coordinates of the object and then calculating the distance to the centers of all labels with the formula
 \[
-    d = \sqrt{(L_x-O-y)^2+(L_y+O_y)^2}
+    d = \sqrt{(L_x-O_x)^2+(L_y+O_y)^2}
 \]
-From the results the two closest labels are taken and ordered by y-coordinates to find out which one is the value and which one the value. From the Output Detection the position and the detected object type are taken and an object of the type is instantiated. To save the objects the following class structure was introduced:
+From the results the two closest labels are taken and ordered by y-coordinates to find out which one is the value and which one is the name of the component. From the Output Detection the position and the detected object type are taken and an object of the type is instantiated. To save the objects the following class structure was introduced:
 \begin{figure}[!ht]
 \includegraphics[width = 3.2in]{img/class_diagram.png}
 \caption{Class diagram of classes that store electric elements}
@@ -339,7 +339,7 @@ From the results the two closest labels are taken and ordered by y-coordinates t
 The most general class is ElectricObject which holds information and methods which exist in all objects, like position, name and methods to add them to the system. From this class the subclass Source and Element exist. The sources, which can be stored are AC Voltage, AC Current, DC Voltage and DC Current. The big difference between AC and DC sources is, that the first one have a frequency and amplitude as parameter, while the second ones have just a constant value which the supply. For the elements classes for resistors, capacitors, inductors and grounds exist. A special case is the Connection class, which represents a connection between Objects, while also specifying to between which ports the connection exists. This are the basic models from which the system is built.
 
 \subsection{Wire Preprocessing}
-This step simplifies the wire next work so it is usable by the next step Wire Processing. Since the hugh transform gives lines which can be overlapping, those lines are merged to
+This step simplifies the wire network so it is usable by the next step Wire Processing. Since the hugh transform gives lines which can be overlapping, those lines are merged to
 single wires. After that lines which form nodes are connected, by moving the end point of the wires which touches another wire to an endpoint of said wire.
 \begin{figure}[!ht]
 \includegraphics[width = 3.2in]{img/wirepp.png}
