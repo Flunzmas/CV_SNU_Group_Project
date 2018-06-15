@@ -7,11 +7,10 @@ function [im_mute, im_binarized, im_thin, ocrResult] = preprocess(im_original, a
 bin_threshold = 150/255;
 
 %% image region choosing
-% switch between response types
-switch answer
-    case 'Photo'
-        % rectify before proceeding
-        im_original = preprocessing.rectifyPaper(im_original);
+% if answer is a photo
+if strcmp(answer, 'Photo')
+    % rectify before proceeding
+    im_original = preprocessing.rectifyPaper(im_original);
 end
 
 % show image and let user select area of interest
@@ -23,7 +22,20 @@ coords = floor(ginput(2));
 im_original = im_original(coords(1,2):coords(2,2),coords(1,1):coords(2,1));
 
 %% OCR and text removal
-[im_mute, ocrResult] = preprocessing.ocrCircuit(im_original);
+% imshow(im_original) ### no need for this I think ###
+
+% if answer is a photo
+if strcmp(answer, 'Photo')
+    % im_dual = imbinarize(im_original, mean(im_original(:)*0.9));
+    % im_dual = imbinarize(im_original, 'adaptive','ForegroundPolarity','dark','Sensitivity', mean(imcomplement(im_original(:)))*1.6);
+
+    % im_dual = (medfilt2(im_dual));
+    % im_dual = (medfilt2(im_dual));
+else
+    im_dual = imbinarize(im_original);
+end 
+
+[im_mute, ocrResult] = preprocessing.ocrCircuit(im_dual, answer);
 
 % until user action
 while(1)
@@ -48,8 +60,8 @@ while(1)
     % convert to roi syntax
     roi = [coords(1,1) coords(1,2) coords(2,1)-coords(1,1) coords(2,2)-coords(1,2)];
 
-    % detect again with new roi
-    [im_mute, ocrResultN] = preprocessing.ocrCircuit(im_mute, roi);
+    %detect again with new roi
+    [im_mute, ocrResultN] = preprocessing.ocrCircuit(im_mute, answer, roi);
     
     % append result
     if(~isempty(ocrResultN.words))
@@ -84,6 +96,12 @@ if(~isempty(left) && ~isempty(right))
     ocrResult.words(right) = [];
     ocrResult.wordBoundingBoxes(right,:) = [];
 end
+
+%erode result if photo
+if strcmp(answer, 'Photo')
+    SE = strel('cube',4);
+    im_mute = imerode(im_mute, SE);
+end 
 
 %% convert to grayscale if colored
 [~, ~, colors] = size(im_mute);
