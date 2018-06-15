@@ -92,7 +92,7 @@ The aim of this student project is, as stated in the abstract, to create a funct
 
 \begin{figure}[!ht]
 \includegraphics[width = 3.2in]{img/cat.jpg}
-\caption{Top: example screenshot of a circuit. Bottom: example photography of a circuit.}
+\caption{Top: example screenshot of a circuit. Bottom: example photography of a circuit}
 \label{fig:c2}
 \end{figure}
 
@@ -102,7 +102,7 @@ Initially, the program expects a digital image to be selected by the user. This 
 
 \begin{figure}[!ht]
 \includegraphics[width = 3.2in]{img/cat.jpg}
-\caption{ROI selection within a rectified photography.}
+\caption{ROI selection within a rectified photography}
 \label{fig:c3}
 \end{figure}
 
@@ -192,8 +192,8 @@ The goal of the functions within the image analysis package is to retrieve all o
 \label{subsec:geom}
 
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
-\caption{Top: pre-processed image region. Bottom: retrieved geometric primitives: circles in blue, lines parallel to the axes in red, skewed lines in green and corners as green crosses.}
+\includegraphics[width = 3.2in]{img/geomprim.jpg}
+\caption{Retrieved geometric primitives: circles in blue, lines parallel to the axes in red, skewed lines in green and corners as green crosses.}
 \label{fig:c8}
 \end{figure}
 \par
@@ -206,8 +206,8 @@ In order to retrieve the scale of the elements, skewed lines are used because in
 \par
 
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
-\caption{Resistor template with highlighted full-length line and resistor dimension explanations.}
+\includegraphics[width = 3.2in]{img/resdim.png}
+\caption{Resistor template with highlighted full-length line and resistor dimension explanations}
 \label{fig:c9}
 \end{figure}
 
@@ -217,7 +217,102 @@ Using this heuristic, the size of a resistor can be estimated within tolerance o
 \subsection{Object Detection}
 \label{subsec:obj}
 
-TODO Cem
+The general approach used for object detection is a sliding-window approach. The structure of object detection goes as follows: 
+\begin{itemize}
+	\item Specific pre-processing for object detection
+	\item Sliding window: Generation of an error-image (difference from template to reference)
+	\item Get position of minimum error/maximum correlation
+	\item Ranking and selecting candidates
+	\item Return found elements
+\end{itemize}
+
+\subsubsection*{Preprocessing for Object Detection}
+
+Before the sliding window can be applied, the image needs to undergo specific preprocessing, which is an integral part of object detection. The template (i.e. a resistor) and the reference image (i.e. the circuit) are first binarized and then dilated. The dilating factor is an essential parameter and influences how tolerant the algorithm is of dissimilarities between the template image and actual representations of the template in the reference image. Increasing the dilation factor increases the change to find high-correlation areas but also decreases accuracy and precision. In figure \ref{fig:detPP1} and figure \ref{fig:detPP2} we can see a template and a reference image being (heavily) dilated.
+\par
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/detPP1.png}
+\caption{Dilated template}
+\label{fig:detPP1}
+\end{figure}
+\par
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/detPP2.png}
+\caption{Dilated reference image}
+\label{fig:detPP2}
+\end{figure}
+
+\subsubsection*{Sliding window and error-image}
+
+The preprocessed template is now sliding over the reference image, while a normalized mean-squared error (or difference value) is calculated at each position. The error values form the error image. Figure \ref{fig:detSW1} and\ref{fig:detSW2} each show a dilated reference image on the left and the corresponding error visualization on the right. Hereby, figure \ref{fig:detSW1} shows much lower dilation values than figure \ref{fig:detSW2}. Observing the error patterns, it is clear that the highly dilated image yields better results, but also more maxima where none should be.
+\par
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/detSW1.png}
+\caption{Slightly dilated reference image and resulting error image}
+\label{fig:detSW1}
+\end{figure}
+\par
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/detSW2.png}
+\caption{Heavily dilated reference image and resulting error image}
+\label{fig:detSW2}
+\end{figure}
+
+\subsubsection*{Get Maximum Correlation}
+
+Using the error image (or inverted: the correlation image), the algorithm tries to find significant maxima in the image. Noise and similarities between objects (e.g. grounds and resistors, or capacitors and wires) make the search for maxima difficult. The algorithm first supresses all values below a certain dynamic threshold and then binarizes again, using another dynamic threshold. Occasionally, the final binarization fails to produce good results and higher dilation values must be used. 
+\par
+Figure \ref{fig:detMX1} to \ref{fig:detMX3} show the different attempts to identify a capacitor, which is particularly hard to detect with certainty due to its very simple geometric shape. In figure \ref{fig:detMX1}, the target maximum is not significant enough and its value is too close to the rest of the error-image. The final binarization results in an all positive image. In figure \ref{fig:detMX2}, other areas have significant - although faulty - maxima aswell, resulting in a faulty final binarization. Figure \ref{fig:detMX3} shows a successful suppression of minima and a successful binarization, with an isolated, significant dot as result. 
+\par
+The algorithm detects those isolated dots and decides whether it has found an object at concerned position, whether it needs to use different parameters or whether there is no element of this kind to be found.
+\par
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/detMX1.png}
+\caption{Faulty binarization - main maximum too insignificant}
+\label{fig:detMX1}
+\end{figure}
+\par
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/detMX2.png}
+\caption{Faulty binarization – false maxima detected}
+\label{fig:detMX2}
+\end{figure}
+\par
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/detMX3.png}
+\caption{Successful binarization}
+\label{fig:detMX3}
+\end{figure}
+
+\subsubsection*{Ranking and Selecting Candidates}
+
+As mentioned before, the algorithm is prone to confuse different elements with each other, provided they share geometric similarities. When dilating template and reference image, this confusion gets worse as the tolerance for non-perfect matches increases. Frequently, multiple elements are detected (with varying tolerance) in the same area in the reference image. To counteract this, the algorithm assigns a score to each found element relating to its certainty. After the algorithm searched for all elements, it checks whether the found elements are out of bounds (the edges of the reference image are prone to faulty maxima) and compares their store against each other. 
+\par
+Figure \ref{fig:detRS1} shows all found candidates for this particular example. Attached to each found element is a confidence score, with lower scores being better. When two or more elements occupy the same area, the element with the lower score gets priority and the others are deleted. The result of this selection process can be seen in figure \ref{fig:detRS2}.
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/detRS1.png}
+\caption{All candidate elements with scores}
+\label{fig:detRS1}
+\end{figure}
+\par
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/detRS2.png}
+\caption{Selected candidates (final result)}
+\label{fig:detRS2}
+\end{figure}
+
+\subsubsection*{Return Found Elements}
+
+The found and selected elements are stored and returned to the main image analysis function for further processing. In the image, the areas of the found elements are erased to enable the following wire detection.
 
 \subsection{Wire Detection}
 \label{subsec:wire}
@@ -226,8 +321,8 @@ After having detected the electrical elements and after having erased them from 
 \par
 
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
-\caption{Top: circuit image with detected elements. Bottom: The same circuit without the elelctrical elements and the recognized cables.}
+\includegraphics[width = 3.2in]{img/connections_after.png}
+\caption{Circuit from figure \ref{fig:detPP2} with recognized cables in red.}
 \label{fig:c10}
 \end{figure}
 
@@ -270,10 +365,67 @@ TODO Chris describe the reshaping of our data so that you can use the SIMSCAPE A
 \section{Evaluation}
 \label{sec:eval}
 
-Extensive evaluation is a key technique to determine the feasibility of the approach and its parts presented in this work. Therefore, every functionality should be tested qualitatively as well as quantitatively.
+Extensive evaluation is a key technique to determine the feasibility of the approach and its parts presented in this work. Therefore, every functionality should be tested qualitatively as well as quantitatively. For this purpose, a bunch of electrical circuit schematics have been created; the algorithm's parts will be tested on each of these images. 
 \par
 
-TODO many eval!!
+\subsection{Rectification}
+
+TODO
+
+\subsection{OCR}
+
+TODO
+
+\subsection{Scale Retrieval}
+
+In order to evaluate the performance of the scale retrieval routine, the dimensions of the resistors of each image has been measured manually. Thereafter, each image was sent through the program until the resistor dimensions were retrieved. In table \ref{tab:resdim}, the dimensions of resistors in each image (column \textit{Measured}) can be found alongside the dimensions retrieved by the algorithm for each picture (column \textit{Calculated}) and a maximum deviance of the resistor size for each dimension. A manual measurement tolerance of one pixel is included in this maximum deviance metric.
+\par
+
+\begin{table}[H]
+\centering
+\begin{tabular}{l|l|l|l|l}
+		File & h/v & Measured & Calculated & Deviance\\ \hline
+		01.png & horiz. & $180\times91$ & $180\times88$ & $<1\times4$ \\ \hline
+		02.png & vert. & $91\times180$ & $90\times194$ & $<2\times5$ \\ \hline
+		03.png & horiz. & $180\times90$ & $176\times87$ & $<5\times4$ \\ \hline
+		04.png & horiz. & $140\times71$ & $140\times69$ & $<1\times3$ \\ \hline
+		05.png & vert. & $46\times92$ & $46\times96$ & $<1\times5$ \\ \hline
+		06.png & vert. & $46\times92$ & $46\times96$ & $<1\times5$ \\ \hline
+		07.png & horiz. & $206\times103$ & $208\times102$ & $<3\times2$ \\ \hline
+		08.png & vert. & $108\times215$ & $106\times216$ & $<3\times2$ \\ \hline
+		09.png & vert. & $85\times169$ & $83\times168$ & $<3\times2$ \\ \hline
+		10.png & vert. & $127\times255$ & $126\times256$ & $<2\times2$ \\ \hline
+		11.png & horiz. & $216\times108$ & $216\times107$ & $<1\times2$ \\ \hline
+		12.png & vert. & $109\times216$ & $108\times212$ & $<2\times5$ \\ \hline
+		13.png & horiz. & $199\times100$ & $200\times98$ & $<2\times3$ \\ \hline
+		14.png & vert. & $94\times185$ & $91\times184$ & $<4\times2$ \\ \hline
+		15.png & horiz. & $265\times133$ & $264\times130$ & $<2\times4$ \\ \hline
+		16.png & horiz. & $215\times108$ & $216\times106$ & $<2\times3$ \\ \hline
+		17.png & vert. & $98\times195$ & $94\times192$ & $<5\times4$ \\ \hline
+		18.png & vert. & $108\times215$ & $108\times224$ & $<\textcolor[rgb]{0.8,0,0}{1\times10}$ \\ \hline
+		19.png & vert. & $118\times235$ & $114\times232$ & $<5\times4$ \\ \hline
+		20.png & horiz. & $245\times122$ & $248\times120$ & $<4\times3$ \\ \hline
+\end{tabular}
+\caption{Resistor size measurements and estimations (in px)}
+\label{tab:resdim}
+\end{table}
+\par
+
+A maximum deviance of 5 pixels is considered satisfactory for an effective usage of the object detection algorithm. With the exception of one case, the scale retrieval algorithm could retrieve the resistor size in all images it got called on. This corresponds to an accuracy of 95\%.
+
+\subsection{Object Detection}
+
+TODO
+
+\subsection{Wire Detection}
+
+TODO
+
+% CONCLUSION----------------------------------------------------
+
+\section{Conclusion}
+
+\textbf{Yessss!}
 
 % CONTRIB-------------------------------------------------------
 
