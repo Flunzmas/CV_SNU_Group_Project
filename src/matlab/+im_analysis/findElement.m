@@ -9,7 +9,7 @@ function [coords, t_param] = findElement(i_temp, i_test)
 %t_param is a score value of certainty for found objects
 %This function uses: ppDetection, getErrorImage, getMaxima
 
-fprintf("  >>Start\tfindElement\n");
+%fprintf("  >>Start\tfindElement\n");
 vis = 0;
 
 
@@ -34,13 +34,13 @@ vis = 0;
         
         % Check for sucessfull maximas
         if ~isnan(coords)
-            fprintf("\tgetMaxima successfull with t_param = %d\n", t_param);
+            %fprintf("\tgetMaxima successfull with t_param = %d\n", t_param);
             break;
         end
 
         % Check if no elements can be found (t_param_max reached)
         if t_param > t_param_max
-            fprintf("\tgetMaxima failed with t_param = %d and terminates", t_param);
+            %fprintf("\tgetMaxima failed with t_param = %d and terminates", t_param);
             coords = NaN;
             %f = figure;
             %imagesc(i_max);
@@ -49,7 +49,7 @@ vis = 0;
         end
         
         % Current loop failed, start next loop
-        fprintf("\tgetMaxima failed with t_param = %d\n", t_param);        
+        %fprintf("\tgetMaxima failed with t_param = %d\n", t_param);        
         t_param     = t_param + 1;
     end
 
@@ -69,5 +69,5 @@ vis = 0;
         waitfor(f);
     end
 
-fprintf("  >>End\t\tfindElement\n");
+%fprintf("  >>End\t\tfindElement\n");
 
