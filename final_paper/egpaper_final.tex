@@ -192,8 +192,8 @@ The goal of the functions within the image analysis package is to retrieve all o
 \label{subsec:geom}
 
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
-\caption{Top: pre-processed image region. Bottom: retrieved geometric primitives: circles in blue, lines parallel to the axes in red, skewed lines in green and corners as green crosses.}
+\includegraphics[width = 3.2in]{img/geomprim.jpg}
+\caption{Retrieved geometric primitives: circles in blue, lines parallel to the axes in red, skewed lines in green and corners as green crosses.}
 \label{fig:c8}
 \end{figure}
 \par
@@ -206,7 +206,7 @@ In order to retrieve the scale of the elements, skewed lines are used because in
 \par
 
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
+\includegraphics[width = 3.2in]{img/resdim.png}
 \caption{Resistor template with highlighted full-length line and resistor dimension explanations}
 \label{fig:c9}
 \end{figure}
@@ -232,14 +232,14 @@ Before the sliding window can be applied, the image needs to undergo specific pr
 \par
 
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
+\includegraphics[width = 3.2in]{img/detPP1.png}
 \caption{Dilated template}
 \label{fig:detPP1}
 \end{figure}
 \par
 
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
+\includegraphics[width = 3.2in]{img/detPP2.png}
 \caption{Dilated reference image}
 \label{fig:detPP2}
 \end{figure}
@@ -250,14 +250,14 @@ The preprocessed template is now sliding over the reference image, while a norma
 \par
 
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
+\includegraphics[width = 3.2in]{img/detSW1.png}
 \caption{Slightly dilated reference image and resulting error image}
 \label{fig:detSW1}
 \end{figure}
 \par
 
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
+\includegraphics[width = 3.2in]{img/detSW2.png}
 \caption{Heavily dilated reference image and resulting error image}
 \label{fig:detSW2}
 \end{figure}
@@ -272,21 +272,21 @@ The algorithm detects those isolated dots and decides whether it has found an ob
 \par
 
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
+\includegraphics[width = 3.2in]{img/detMX1.png}
 \caption{Faulty binarization - main maximum too insignificant}
 \label{fig:detMX1}
 \end{figure}
 \par
 
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
+\includegraphics[width = 3.2in]{img/detMX2.png}
 \caption{Faulty binarization – false maxima detected}
 \label{fig:detMX2}
 \end{figure}
 \par
 
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
+\includegraphics[width = 3.2in]{img/detMX3.png}
 \caption{Successful binarization}
 \label{fig:detMX3}
 \end{figure}
@@ -298,14 +298,14 @@ As mentioned before, the algorithm is prone to confuse different elements with e
 Figure \ref{fig:detRS1} shows all found candidates for this particular example. Attached to each found element is a confidence score, with lower scores being better. When two or more elements occupy the same area, the element with the lower score gets priority and the others are deleted. The result of this selection process can be seen in figure \ref{fig:detRS2}.
 
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
+\includegraphics[width = 3.2in]{img/detRS1.png}
 \caption{All candidate elements with scores}
 \label{fig:detRS1}
 \end{figure}
 \par
 
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
+\includegraphics[width = 3.2in]{img/detRS2.png}
 \caption{Selected candidates (final result)}
 \label{fig:detRS2}
 \end{figure}
@@ -321,8 +321,8 @@ After having detected the electrical elements and after having erased them from 
 \par
 
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
-\caption{Top: circuit image with detected elements. Bottom: The same circuit without the elelctrical elements and the recognized cables.}
+\includegraphics[width = 3.2in]{img/connections_after.png}
+\caption{Circuit from figure \ref{fig:detPP2} with recognized cables in red.}
 \label{fig:c10}
 \end{figure}
 
