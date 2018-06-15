@@ -26,11 +26,9 @@ im_original = im_original(coords(1,2):coords(2,2),coords(1,1):coords(2,1));
 
 % if answer is a photo
 if strcmp(answer, 'Photo')
-    % im_dual = imbinarize(im_original, mean(im_original(:)*0.9));
+    %filter for noise
     im_dual = imbinarize(im_original, 'adaptive','ForegroundPolarity','dark','Sensitivity', 0.575);
-
     im_dual = (medfilt2(im_dual));
-    % im_dual = (medfilt2(im_dual));
 else
     im_dual = imbinarize(im_original);
 end 

@@ -101,7 +101,7 @@ Initially, the program expects a digital image to be selected by the user. This 
 \par
 
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
+\includegraphics[width = 3.2in]{img/roi.png}
 \caption{ROI selection within a rectified photography}
 \label{fig:c3}
 \end{figure}
@@ -128,12 +128,22 @@ Before being able to obtain the electrical circuit elements from the provided im
 When dealing with photographies, the depicted schematic may be distorted due to the surface not being aligned to the image plane. This has to be taken care of in order to use the object recognition approach presented in this work. Therefore, asserting that the entire surface and its corner points are included in the image, a rectification step is taken to bring the schematic onto the image plane.
 \par
 
-TODO explain rectification
+To do this, the image needs to be processed first. After binarizing the image with a predefined threshold, the biggest shape get extracted. This means that we assume the paper to take up the most part of the image. After additional filtering with edge detection and dilating and eroding the result, the remaining holes (mostly text) will be filled so that only a tetragon remains.\\
+By taking the boundaries of the image and calculate its mean values we can transform the resulting polar coordinates to Cartesian coordinates.
+
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{img/sig.png}
+\caption{Boundary signature of a detected paper}
+\label{fig:sig}
+\end{figure}
+
+Figure \ref{fig:sig} shows the result of that transformation. Taking the value of the peaks with the highest prominence the location of the edges can be found. With the resulting points, the corresponding points need to be generated. This is done by taking the mean value of the point pairs (which are defined by the pair that is the closest together). After that the aspect ratio will be corrected to be identical to that of a \textit{A4} paper. After a simple warping of the image the edges get detected again to verify the result and the image gets cropped according to the result.
+
 \par
 
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
-\caption{Pre/Post-rectification img}
+\includegraphics[width = 3.2in]{img/rect.png}
+\caption{Post-rectification of image in figure \ref{fig:c2}}
 \label{fig:c5}
 \end{figure}
 
@@ -144,13 +154,13 @@ In depictions of non-distorted or rectified schematics, MATLAB's OCR functionali
 \par
 
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
-\caption{Some ocr img}
-\label{fig:c6}
+\includegraphics[width = 3.2in]{img/ocr.png}
+\caption{Successful OCR result}
+\label{fig:ocr}
 \end{figure}
 \par
 
-TODO OCR explanation
+For the OCR function a specific language was trained using the \textit{MATLAB} training function. This gives more precise results, as only letters contained in \textit{RLC}-filter circuits are allowed (and component values between $p$ and $G$). All values that have been found to be above a predefined confidence (depending on photo or screenshot) will be extracted and the text will be erased from the image. If not all text was found successfully (if the text is too close to a component), the user can define the region where the rest of the text lies (with the confidence lowered). If the image comes from a photo, some adaptive and noise filtering will be done before the OCR and some line thickening afterwards since the image will have more grey scale values compared to the screenshot. Figure \ref{fig:ocr} shows the successful result of the algorithm.
 
 \subsection{Binarization, Morphology}
 \label{subsec:morph}
@@ -369,11 +379,25 @@ In order for the presented approach to produce meaningful results, a few asserti
 
 \subsection{Rectification}
 
-TODO
+To validate the rectification, 15 photographs of papers were collected and rectified. Then it was evaluated how many of the pixels that are not contained on the paper lay inside the rectified image. The average result is $99.5\%$, where the minimally measured value is $98.8\%$. The pixels that lay outside of the paper, that are contained in the rectified image, resulted from the paper not being flat on the ground resulting in small curls. Since the user has to select the area of the filter this proportion can be neglected.
 
 \subsection{OCR}
 
-TODO
+To evaluate the OCR algorithm the number of detected text compared to the input image was calculated. 
+
+\begin{table}[!ht]
+\centering
+\caption{Evaluation of OCR algorithm}
+\label{tab:ocr}
+\begin{tabular}{|l|l|l|}
+\hline
+Found w/o user & Found w/ user & Correct \\ \hline
+73.62\%        & 100\%         & 95.7\%  \\ \hline
+\end{tabular}
+\end{table}
+
+Instead of listing every single of the 30 tested images, only the average result is displayed in table \ref{tab:ocr}. The values that were evaluated is the text that was found without the user specifying a region, the text that was able to be detected and the amount of text that was correctly detected. The score of the found text without user interaction is somewhat low because the OCR algorithm supplied by MATLAB has trouble finding text if it is close to the components. Also, the correctly detected text is high, but the wrongly identified test is mostly caused by similar letters like upper- and lower case $P$.\\
+Additionally, the same procedure was made for several images of two printed schematics. The text was always correctly detected, but the detection without user-interaction is $59.4\%$, which is expectedly lower compared to screenshots. This is due to noise in the image and a lower resolution.
 
 \subsection{Scale Retrieval}
 
@@ -521,7 +545,7 @@ This paper introduced a method to digitalize electrical circuits given in form o
 
 Despite promising results, there are several measures which could improve this work:
 \begin{itemize}
-	\item A limiting factor of this approach, especially when dealing with photographies, was the detection of lines using MATLAB's hough transformation implementation. Implementing a new and custom hough transformation is a promising way to make the retrieval of connections mroe robust.
+	\item A limiting factor of this approach, especially when dealing with photographies, was the detection of lines using MATLAB's hough transformation implementation. Implementing a new and custom hough transformation is a promising way to make the retrieval of connections more robust. \textbf{Additionally, this resulted in lines not being detected after the rectification, which explains why this part was not validated TODO}.
 	\item Similar to MATLAB's hough transform, its OCR functionality also struggled to correctly and robustly detect the text in the test schematics. A proper OCR solution would increase the robustness of the whole procedure just like an improved hough transform would.
 	\item Within the object detection, instead of the comparison of image regions with the respective templates and the following calculation of error images, the process of finding electrical elements could be made more abstract, e.g. by comparing histograms of geometrical primitive imformations such as line length and angle instead of comparing color values pixel by pixel. Such an abstraction can potentially increase the tolerance of the object detection algorithm regarding the deviance of the found circuit elements from the template.
 \end{itemize}
