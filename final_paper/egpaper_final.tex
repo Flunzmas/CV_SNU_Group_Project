@@ -128,8 +128,8 @@ Before being able to obtain the electrical circuit elements from the provided im
 When dealing with photographies, the depicted schematic may be distorted due to the surface not being aligned to the image plane. This has to be taken care of in order to use the object recognition approach presented in this work. Therefore, asserting that the entire surface and its corner points are included in the image, a rectification step is taken to bring the schematic onto the image plane.
 \par
 
-To do this, the image needs to be processed first. After binarizing the image with a predefined threshold, the biggest shape get extracted. This means that we assume the paper to take up the most part of the image. After additional filtering with edge detection and dilating and eroding the result, the remaining holes (mostly text) will be filled so that only a tetragon remains.\\
-By taking the boundaries of the image and calculate its mean values we can transform the resulting polar coordinates to Cartesian coordinates.
+In order to do this, the image needs to be processed first. After binarizing the image with a predefined threshold, the biggest shape gets extracted, assuming that the paper takes up the biggest part of the image. After additional filtering such as edge detection, dilation and erosion of the result, the remaining holes (mostly text) will be filled so that only a tetragon remains.\\
+By taking the boundaries of the image and calculating its mean values, the resulting polar coordinates can be transformed to cartesian coordinates.
 
 \begin{figure}[!ht]
 \includegraphics[width = 3.2in]{img/sig.png}
@@ -137,7 +137,7 @@ By taking the boundaries of the image and calculate its mean values we can trans
 \label{fig:sig}
 \end{figure}
 
-Figure \ref{fig:sig} shows the result of that transformation. Taking the value of the peaks with the highest prominence the location of the edges can be found. With the resulting points, the corresponding points need to be generated. This is done by taking the mean value of the point pairs (which are defined by the pair that is the closest together). After that the aspect ratio will be corrected to be identical to that of a \textit{A4} paper. After a simple warping of the image the edges get detected again to verify the result and the image gets cropped according to the result.
+Figure \ref{fig:sig} shows the result of that transformation. Taking the value of the peaks with the highest prominence, the location of the edges can be found. With the resulting points, the corresponding points need to be generated. This is done by taking the mean value of the point pairs, which are defined by the pair that is closest together. Thereafter, the aspect ratio will be corrected to be identical to that of a \textit{A4} paper. After a simple warping of the image the edges get detected again to verify the result and the image gets cropped according to the result.
 
 \par
 
@@ -160,7 +160,7 @@ In depictions of non-distorted or rectified schematics, MATLAB's OCR functionali
 \end{figure}
 \par
 
-For the OCR function a specific language was trained using the \textit{MATLAB} training function. This gives more precise results, as only letters contained in \textit{RLC}-filter circuits are allowed (and component values between $p$ and $G$). All values that have been found to be above a predefined confidence (depending on photo or screenshot) will be extracted and the text will be erased from the image. If not all text was found successfully (if the text is too close to a component), the user can define the region where the rest of the text lies (with the confidence lowered). If the image comes from a photo, some adaptive and noise filtering will be done before the OCR and some line thickening afterwards since the image will have more grey scale values compared to the screenshot. Figure \ref{fig:ocr} shows the successful result of the algorithm.
+For the OCR function, a specific language was trained using the \textit{MATLAB} training function. This yields more precise results, as only letters contained in \textit{RLC}-filter circuits are allowed (and component values between $p$ and $G$). All values that have been found to be above a predefined confidence (depending on photo or screenshot) will be extracted and the text will be erased from the image. If not all text was found successfully (if the text is too close to a component), the user can define the region where the rest of the text lies (with the confidence lowered). If the image is a photography, some adaptive and noise filtering will be done before the OCR and some line thickening afterwards, since the image will have more grey scale values compared to the screenshot. Figure \ref{fig:ocr} shows the successful result of the algorithm.
 
 \subsection{Binarization, Morphology}
 \label{subsec:morph}
@@ -363,7 +363,7 @@ In order for the presented approach to produce meaningful results, a few asserti
 \begin{itemize}
 	\item Circuit images are generated with LTSpice\footnote[1]{http://www.analog.com/en/design-center/design-tools-and-calculators.html?domain=www.linear.com\#LTspice}, which uses normed representations of all relevant circuit elements. These representations match the templates used in the sliding-window approach.
 	\item circuits are drawn with black colors on a white background. In photographies: The contrast between circuit and background should be sufficient.
-	\item In photographies: All four corners of the rectangular surface on which the circuit is depicted have to be visible.
+	\item In photographies: All four corners of the rectangular surface on which the circuit is depicted have to be visible. That shape is the biggest on the photography.
 	\item Values of electrical properties of elements range from $1p$ ($1 * 10^{-12}$) to $999G$ ($999* 10^{9}$).
 	\item Every circuit has at least one resistor. All circuits are RLC-Circuits with one source of voltage.
 	\item All electrical circuit elements and connections are oriented either vertically or horizontally.
@@ -379,11 +379,11 @@ In order for the presented approach to produce meaningful results, a few asserti
 
 \subsection{Rectification}
 
-To validate the rectification, 15 photographs of papers were collected and rectified. Then it was evaluated how many of the pixels that are not contained on the paper lay inside the rectified image. The average result is $99.5\%$, where the minimally measured value is $98.8\%$. The pixels that lay outside of the paper, that are contained in the rectified image, resulted from the paper not being flat on the ground resulting in small curls. Since the user has to select the area of the filter this proportion can be neglected.
+To validate the rectification, 15 photographs of papers were collected and rectified. Then the number of pixels that are not part of the paper inside the rectified image is being counted. The average result is $99.5\%$, with the smallest measured value being $98.8\%$. The pixels which are contained in the rectified image but are outside of the paper are a consequence of the paper not being flat on the ground, which in turn results in small curls. Since the user has to select the area of the filter, this proportion can be neglected.
 
 \subsection{OCR}
 
-To evaluate the OCR algorithm the number of detected text compared to the input image was calculated. 
+To evaluate the OCR algorithm, the number of detected text patches compared to the input image was calculated. 
 
 \begin{table}[!ht]
 \centering
@@ -545,7 +545,7 @@ This paper introduced a method to digitalize electrical circuits given in form o
 
 Despite promising results, there are several measures which could improve this work:
 \begin{itemize}
-	\item A limiting factor of this approach, especially when dealing with photographies, was the detection of lines using MATLAB's hough transformation implementation. Implementing a new and custom hough transformation is a promising way to make the retrieval of connections more robust. \textbf{Additionally, this resulted in lines not being detected after the rectification, which explains why this part was not validated TODO}.
+	\item A limiting factor of this approach, especially when dealing with photographies, was the detection of lines using MATLAB's hough transformation implementation. Its poor performance also resulted in lines not being detected after the rectification has taken place, which explains why this part was not validated. Implementing a new and custom hough transformation is a promising way to make the retrieval of connections more robust.
 	\item Similar to MATLAB's hough transform, its OCR functionality also struggled to correctly and robustly detect the text in the test schematics. A proper OCR solution would increase the robustness of the whole procedure just like an improved hough transform would.
 	\item Within the object detection, instead of the comparison of image regions with the respective templates and the following calculation of error images, the process of finding electrical elements could be made more abstract, e.g. by comparing histograms of geometrical primitive imformations such as line length and angle instead of comparing color values pixel by pixel. Such an abstraction can potentially increase the tolerance of the object detection algorithm regarding the deviance of the found circuit elements from the template.
 \end{itemize}
