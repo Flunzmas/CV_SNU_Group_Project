@@ -318,33 +318,44 @@ After the wire detection, all detection results are passed onto the output gener
 
 % ---------------------------
 
-\section{Output Generation}
 \label{sec:output}
 
 In this module, the results of the image analysis routines are reframed and sent to SIMULINK in order to build an electrical circuit model. After its creation, the user can interact with the model which is also saved to enable further usage.
 
-\subsection{SIMSCAPE Electrical Model}
-\label{sec:sims}
+\section{Output Generation}
+In this the step the problem takes all the data which has been gathered in the previous steps and generated the Simescape model from it. Simscape is a special library for Simulink to simulate physical systems.
 
-TODO Chris describe Model
-\par
-
+\subsection{Object Generation}
+The input to the Object Generation are on one hand the Elements detected in the Object Detection. On the other hand the OCR input is used to find the values and labels corresponding to the input. LTSPICE models have the property, that the Label is always above the value. So to assign them to an object we search the labels closest to the detected object by taking the center coordinates of the object and then calculating the distance to the centers of all labels with the formula
+\[
+    d = \sqrt{(L_x-O-y)^2+(L_y+O_y)^2}
+\]
+From the results the two closest labels are taken and ordered by y-coordinates to find out which one is the value and which one the value. From the Output Detection the position and the detected object type are taken and an object of the type is instantiated. To save the objects the following class structure was introduced:
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
-\caption{some model pic}
-\label{fig:c11}
+\includegraphics[width = 3.2in]{class_diagram.png}
+\caption{Class diagram of classes that store electric elements}
+\label{fig:o1}
+\end{figure}
+The most general class is ElectricObject which holds information and methods which exist in all objects, like position, name and methods to add them to the system. From this class the subclass Source and Element exist. The sources, which can be stored are AC Voltage, AC Current, DC Voltage and DC Current. The big difference between AC and DC sources is, that the first one have a frequency and amplitude as parameter, while the second ones have just a constant value which the supply. For the elements classes for resistors, capacitors, inductors and grounds exist. A special case is the Connection class, which represents a connection between Objects, while also specifying to between which ports the connection exists. This are the basic models from which the system is built.
+
+\subsection{Wire Preprocessing}
+This step simplifies the wire next work so it is usable by the next step Wire Processing. Since the hugh transform gives lines which can be overlapping, those lines are merged to
+single wires. After that lines which form nodes are connected, by moving the end point of the wires which touches another wire to an endpoint of said wire.
+\begin{figure}[!ht]
+\includegraphics[width = 3.2in]{wirepp.png}
+\caption{Steps done in Wire Preprocessing: Merging on top and intersection detection on bottom}
+\label{fig:o2}
 \end{figure}
 
-\subsection{Component Generation and Assembly}
-\label{sec:generation}
+\subsection{Wire Processing}
+In the Wire Processing all the objects are taken and a list of all ports is generated. From these ports a depth first search is used to find all other ports connected to this wire tree. Then all Connections are instantiated between all Ports of the Objects found and the root port. After that the found ports are removed from the list and the search continues until no ports are left.
 
-TODO Chris describe the reshaping of our data so that you can use the SIMSCAPE Api
-\par
-
+\subsection{Output Generation}
+In this step a new Simulink system is created. First all the objects are passed the system with the call to add themselves to it. After this is finished the same is done with the connections. The user will now have the finished model of the system, which he wanted to analyze, on his screen and can add Elements like voltage sensors and scopes to analyze his system.
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{img/cat.jpg}
-\caption{some result model pic}
-\label{fig:c12}
+\includegraphics[width = 3.2in]{simscape_system.png}
+\caption{Finished system as displayed in Simulink}
+\label{fig:o3}
 \end{figure}
 
 % EVAL----------------------------------------------------------
