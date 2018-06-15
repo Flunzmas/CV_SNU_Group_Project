@@ -7,7 +7,7 @@ function i_err  = getErrorImage(i_tem, i_ref, stepsize)
 
 %TODO: is padding needed? --> assume template image is properly cropped!
 
-fprintf("   >Start\tgetErrorImage");
+%fprintf("   >Start\tgetErrorImage");
 vis = 0;
 
 %% Check inputs
@@ -41,7 +41,7 @@ vis = 0;
 %% Generate error image
     i_error     = ones(rows_ref, cols_ref);     %Error image, initialize with max normalized error = 1
     
-    fprintf("\tprogress: %6.2f%s", 0, '%');
+    %fprintf("\tprogress: %6.2f%s", 0, '%');
     %Loop through reference image
     for row = 1:stepsize:maxRow + 1
         for col = 1:stepsize:maxCol + 1
@@ -76,11 +76,11 @@ vis = 0;
         end
         progress    = row / maxRow * 100;
         if mod(round(progress), 10) == 3
-            fprintf(repmat('\b', 1, 18));
-            fprintf("\tprogress: %6.2f%s", progress, '%'); 
+            %fprintf(repmat('\b', 1, 18));
+            %fprintf("\tprogress: %6.2f%s", progress, '%'); 
         end
     end
-    fprintf(repmat('\b', 1, 18));
+    %fprintf(repmat('\b', 1, 18));
     
 %% Visualization and return
     i_errorInv = imcomplement(i_error);
@@ -99,6 +99,6 @@ vis = 0;
     i_err = i_errorInv(floor(rows_tem / 2) + 1:rows_ref - floor(rows_tem / 2), ...
                        floor(cols_tem / 2) + 1:cols_ref - floor(cols_tem / 2));
 
-fprintf("\t...Ended\n");
+%fprintf("\t...Ended\n");
     
 return

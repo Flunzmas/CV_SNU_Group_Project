@@ -8,7 +8,7 @@ function [coords, i_max] = getMaxima(i_err)
 %It also returns the binarized image from which the maximums have been
 %collected.
 
-fprintf("   >Start\tgetMaxima");
+%fprintf("   >Start\tgetMaxima");
 vis = 0;
 
 %% Binarize maxima
@@ -22,7 +22,7 @@ vis = 0;
     if sum(sum(i_supBin)) >= numel(i_err) * 0.8
         coords  = NaN;
         i_max   = i_supBin;
-        fprintf("\t\t...Ended - Type 1 failure\n");
+        %fprintf("\t\t...Ended - Type 1 failure\n");
         if 0    %Compare error image and minima supressed image
             f = figure;
             colormap('gray');
@@ -39,7 +39,7 @@ vis = 0;
     || max(sum(i_supBin, 2)) >= size(i_supBin, 2) * 0.1
         coords  = NaN;
         i_max   = i_supBin;
-        fprintf("\t\t...Ended - Type 2 failure\n");
+        %fprintf("\t\t...Ended - Type 2 failure\n");
         if 0    %Compare error image and minima supressed image
             f = figure;
             colormap('gray');
@@ -83,6 +83,6 @@ end
 %% Return
     i_max   = i_supBin;
 
-fprintf("\t\t...Ended - successfull\n");
+%fprintf("\t\t...Ended - successfull\n");
 
 return
