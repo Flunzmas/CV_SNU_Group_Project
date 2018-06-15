@@ -10,7 +10,7 @@ answer = questdlg('What type of image are you supplying?', ...
 	'Image Type', ...
 	'Photo', 'Screenshot','Screenshot');
 im_original = selectImage();
-
+imshow(im_original)
 %% apply preprocessing
 disp('main: preprocessing')
 [im_mute, im_binarized, im_thin, ocr_result] = preprocess(im_original, answer);

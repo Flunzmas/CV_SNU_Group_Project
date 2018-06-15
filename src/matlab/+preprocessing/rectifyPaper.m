@@ -22,9 +22,3 @@ imOut = imW(min(pointsW(:,2)):max(pointsW(:,2)),min(pointsW(:,1)):max(pointsW(:,
 if(size(imOut, 1) < size(imOut, 2))
     imOut = imrotate(imOut, -90);
 end
-
-a = preprocessing.getSingleObject(imOut);
-
-1 - mean(a(:))
-
-

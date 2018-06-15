@@ -7,7 +7,7 @@ minConf = 0.8;
 
 % if answer is a photo
 if strcmp(answer, 'Photo')
-    minConf = 0.75;
+    minConf = 0.825;
 end 
 
 
@@ -43,9 +43,6 @@ minConfInd = ocrData.WordConfidences > minConf;
 %extract words and boxes with min confidence
 ocrResult.wordBoundingBoxes = ocrData.WordBoundingBoxes(minConfInd, :);
 ocrResult.words = ocrData.Words(minConfInd, :);
-
-ocrData.WordConfidences(minConfInd)
-mean(ocrData.WordConfidences(minConfInd))
 
 %in case of empty results with high confidence??
 empt = cellfun('isempty', ocrResult.words);

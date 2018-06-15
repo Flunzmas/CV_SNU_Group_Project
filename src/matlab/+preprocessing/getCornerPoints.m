@@ -63,15 +63,3 @@ if(size(points, 1) > 4)
     %delete point
     points(dup,:) = [];
 end
-
-% %get center for clockwise sorting
-% cx = mean(points(:,1));
-% cy = mean(points(:,2));
-% 
-% %get angle and sort
-% angle = atan2(points(:,1) - cy, points(:,2) - cx);
-% [~, ind] = sort(angle);
-% 
-% %update points
-% points(:,2) = points(ind,2);
-% points(:,1) = points(ind,1);
