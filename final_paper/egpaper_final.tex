@@ -332,7 +332,7 @@ The input to the Object Generation are on one hand the Elements detected in the 
 \]
 From the results the two closest labels are taken and ordered by y-coordinates to find out which one is the value and which one the value. From the Output Detection the position and the detected object type are taken and an object of the type is instantiated. To save the objects the following class structure was introduced:
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{class_diagram.png}
+\includegraphics[width = 3.2in]{img/class_diagram.png}
 \caption{Class diagram of classes that store electric elements}
 \label{fig:o1}
 \end{figure}
@@ -342,7 +342,7 @@ The most general class is ElectricObject which holds information and methods whi
 This step simplifies the wire next work so it is usable by the next step Wire Processing. Since the hugh transform gives lines which can be overlapping, those lines are merged to
 single wires. After that lines which form nodes are connected, by moving the end point of the wires which touches another wire to an endpoint of said wire.
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{wirepp.png}
+\includegraphics[width = 3.2in]{img/wirepp.png}
 \caption{Steps done in Wire Preprocessing: Merging on top and intersection detection on bottom}
 \label{fig:o2}
 \end{figure}
@@ -353,7 +353,7 @@ In the Wire Processing all the objects are taken and a list of all ports is gene
 \subsection{Output Generation}
 In this step a new Simulink system is created. First all the objects are passed the system with the call to add themselves to it. After this is finished the same is done with the connections. The user will now have the finished model of the system, which he wanted to analyze, on his screen and can add Elements like voltage sensors and scopes to analyze his system.
 \begin{figure}[!ht]
-\includegraphics[width = 3.2in]{simscape_system.png}
+\includegraphics[width = 3.2in]{img/simscape_system.png}
 \caption{Finished system as displayed in Simulink}
 \label{fig:o3}
 \end{figure}
