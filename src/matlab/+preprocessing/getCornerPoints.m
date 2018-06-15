@@ -1,36 +1,9 @@
 function points = getCornerPoints(imI)
 
-%% settings
-
-%threshold for binarizing
-threshold = 102/255;
-
-%% image processing
-
-%convert image to grayscale
-imI = rgb2gray(imI);
-
-%binarize image with threshold
-imI = imbinarize(imI, threshold);
-
-%paper must be biggest area
-imI = bwareafilt(imI,1);
-
-%detect edges
-imI = edge(imI, 'sobel');
-
-%dilation and erosion
-se = strel('disk', 2);
-imI = imdilate(imI,se);
-imI = imerode(imI,se);
-
-%fill holes
-imI = imfill(imI, 'holes');
-
 %% image analysis
 
 %get region boundary
-B = bwboundaries(imI, 8, 'noholes');
+B = bwboundaries(preprocessing.getSingleObject(imI), 8, 'noholes');
 B = B{1};
 
 %boudary signature
