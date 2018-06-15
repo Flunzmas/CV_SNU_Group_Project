@@ -75,6 +75,7 @@ right = [];
 
 % check for split ()
 for k=1:numel(ocrResult.words)
+    ocrResult.words{k} = strrep(ocrResult.words{k},'I.','L');
     if(strfind(ocrResult.words{k}, '('))
         left = k;
     elseif(strfind(ocrResult.words{k}, ')'))
@@ -96,6 +97,8 @@ if(~isempty(left) && ~isempty(right))
     ocrResult.words(right) = [];
     ocrResult.wordBoundingBoxes(right,:) = [];
 end
+
+ocrResult.words
 
 %erode result if photo
 if strcmp(answer, 'Photo')

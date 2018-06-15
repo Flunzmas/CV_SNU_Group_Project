@@ -44,6 +44,9 @@ minConfInd = ocrData.WordConfidences > minConf;
 ocrResult.wordBoundingBoxes = ocrData.WordBoundingBoxes(minConfInd, :);
 ocrResult.words = ocrData.Words(minConfInd, :);
 
+ocrData.WordConfidences(minConfInd)
+mean(ocrData.WordConfidences(minConfInd))
+
 %in case of empty results with high confidence??
 empt = cellfun('isempty', ocrResult.words);
 
